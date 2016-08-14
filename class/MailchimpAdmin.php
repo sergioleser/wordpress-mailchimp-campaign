@@ -52,7 +52,7 @@ class MailchimpAdmin extends Mailchimp
     {
         ?>
         <div class="wrap">
-            <h1>Mailchimp Campaigns</h1>
+            <h1><?php echo $this->logo('display: inline-block; height: 20px;'); ?> Mailchimp Campaigns</h1>
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
@@ -177,6 +177,17 @@ class MailchimpAdmin extends Mailchimp
         '</p>';
     }
   
+
+    /**
+    * Do stuff on option update
+    */
+    function action_update_option( $option, $old_value, $value ) {
+        if( 'mailchimpcampaigns_settings' == $option ) {
+            if( ($old_value['cpt_name'] != $value['cpt_name'] ) )
+                flush_rewrite_rules(); // If CPT Name has changed
+        } 
+    }
+
     /**
     * Miscellaneous
     */
@@ -193,14 +204,8 @@ class MailchimpAdmin extends Mailchimp
         return $button;
     }
 
-    /**
-    * Do stuff on option update
-    */
-    function action_update_option( $option, $old_value, $value ) {
-        if( 'mailchimpcampaigns_settings' == $option ) {
-            if( ($old_value['cpt_name'] != $value['cpt_name'] ) )
-                flush_rewrite_rules(); // If CPT Name has changed
-        } 
+    public function logo($css){
+        return '<img src="https://static.mailchimp.com/web/social/freddie.png" style="'.$css.'" />';
     }
 
 }
