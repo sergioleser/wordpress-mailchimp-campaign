@@ -25,7 +25,6 @@ class Mailchimp {
 	public $last_error;
 	public $last_call;
 	public $data;
-	public $post_type;
 
 	/**
 	 * Create Mailchimp  instance
@@ -35,7 +34,6 @@ class Mailchimp {
 	{
 		$this->api_authname = get_option('mailchimpcampaigns_api_authname', false);
 		$this->api_key = get_option('mailchimpcampaigns_api_key', false);
-		$this->post_type = get_option('mailchimpcampaigns_post_type', MC_DEFAULT_CPT); 
 
 		// Die here if no API Key...
 		if( !$this->api_key)
@@ -122,3 +120,6 @@ class Mailchimp {
 	}
 
 }
+
+// Instanciate our class 
+$MCC = new Mailchimp();
