@@ -23,7 +23,7 @@ define( 'MCC_DEFAULT_CPT',  'newsletter' );
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 include( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
 include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
-include( MCC_PLUGIN_ROOT_DIR . 'mailchimp-custom-post-type.php');
+include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
 
 
 /*

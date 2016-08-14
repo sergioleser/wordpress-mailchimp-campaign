@@ -11,12 +11,12 @@
  */
 class MailchimpAdmin extends Mailchimp
 {
-    /**
+
+    /**  
      * Holds the values to be used in the fields callbacks
      */
-    public $post_type_name;
-	  public $post_type_public;
-	  public $post_type_archive;
+    public $settings;
+
 
     /**
      * Start up
@@ -24,10 +24,10 @@ class MailchimpAdmin extends Mailchimp
     public function __construct()
     {
         parent::__construct();
-        $this->options =  get_option('mailchimpcampaigns_settings');
-
+        $this->settings =  get_option('mailchimpcampaigns_settings');
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
+        add_action( 'update_option', array( $this, 'action_update_option'), 10, 3 ); 
     }
 
     /**
@@ -125,12 +125,8 @@ class MailchimpAdmin extends Mailchimp
             $new_input['api_key'] = sanitize_text_field( $input['api_key'] );
 
         if( isset( $input['cpt_name'] ) )
-            $new_input['cpt_name'] = sanitize_text_field( $input['cpt_name'] );
-        if( isset( $input['cpt_public'] ) )
-            $new_input['cpt_public'] = absint( $input['cpt_public'] );
-        if( isset( $input['cpt_archive'] ) )
-            $new_input['cpt_archive'] = absint( $input['cpt_archive'] );
-
+            $new_input['cpt_name'] = sanitize_title( sanitize_text_field( $input['cpt_name'] ) );
+     
         return $new_input;
     }
 
@@ -148,14 +144,14 @@ class MailchimpAdmin extends Mailchimp
     public function field_api_authname_callback() {
         printf(
             '<input class="code" type="text" id="api_authname" name="mailchimpcampaigns_settings[api_authname]" value="%s" />',
-            isset( $this->options['api_authname'] ) ? esc_attr( $this->options['api_authname']) : ''
+            isset( $this->settings['api_authname'] ) ? esc_attr( $this->settings['api_authname']) : ''
         );
         print '<p class="description">'. __('Let Mailchimp know who you are', MCC_TXT_DOMAIN).' :)</p>';
     }
     public function field_api_key_callback() {
         printf(
             '<input class="code" type="text" id="api_key" name="mailchimpcampaigns_settings[api_key]" value="%s" />',
-            isset( $this->options['api_key'] ) ? esc_attr( $this->options['api_key']) : ''
+            isset( $this->settings['api_key'] ) ? esc_attr( $this->settings['api_key']) : ''
         );
         print 
         '<p class="description">' .
@@ -169,7 +165,7 @@ class MailchimpAdmin extends Mailchimp
         $placeholder = __('Default: '. MCC_DEFAULT_CPT, MCC_TXT_DOMAIN);      
         printf(
             '<input class="code" type="text" id="cpt_name" name="mailchimpcampaigns_settings[cpt_name]" value="%s" placeholder="'.$placeholder.'" />',
-            isset( $this->options['cpt_name'] ) ? esc_attr( $this->options['cpt_name']) : ''
+            isset( $this->settings['cpt_name'] ) ? esc_attr( $this->settings['cpt_name']) : ''
         );
         print 
         '<p class="description">'.
@@ -195,6 +191,16 @@ class MailchimpAdmin extends Mailchimp
             '</p>';
         endif;
         return $button;
+    }
+
+    /**
+    * Do stuff on option update
+    */
+    function action_update_option( $option, $old_value, $value ) {
+        if( 'mailchimpcampaigns_settings' == $option ) {
+            if( ($old_value['cpt_name'] != $value['cpt_name'] ) )
+                flush_rewrite_rules(); // If CPT Name has changed
+        } 
     }
 
 }

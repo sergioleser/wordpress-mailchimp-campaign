@@ -17,6 +17,7 @@ class Mailchimp {
 	private $api_key;
 
 	// Public settings
+	public $settings;
 	public $api_authname;
 	public $api_datacentre;
 	public $api_endpoint;
@@ -32,8 +33,9 @@ class Mailchimp {
 	 */
 	public function __construct()
 	{
-		$this->api_authname = get_option('mailchimpcampaigns_api_authname', false);
-		$this->api_key = get_option('mailchimpcampaigns_api_key', false);
+		$this->settings = get_option('mailchimpcampaigns_settings');
+		$this->api_authname = isset($this->settings['api_authname']) ? $this->settings['api_authname'] : false;
+		$this->api_key = isset($this->settings['api_key']) ? $this->settings['api_key'] : false;
 
 		// Die here if no API Key...
 		if( !$this->api_key)
