@@ -20,21 +20,32 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 // Define globals
 define( 'MCC_API_VERSION', '3.0' );
 define( 'MCC_DEFAULT_CPT',  'newsletter' );
+define( 'MCC_DEFAULT_CPT_STATUS',  'publish' );
 define( 'MCC_TEXT_DOMAIN', 'mailchimpcampaigns' );
+define( 'MCC_META_PRE', 'mcc_' );
+define( 'MCC_META_KEY_ID', MCC_META_PRE .'id' );
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 
-// Include files suite 
-include( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
-include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
-include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
-include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
-include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
 
 // Instanciate things
-if( is_admin() ) {
-    $MCCAdmin = new MailchimpAdmin();
-    $MCCampaigns = new MailchimpCampaigns();
+include( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
+include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
+new MailchimpCustomPostType();
+
+function mailchimpcampaigns_init(){
+    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
+    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
+    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
+
+    if( is_admin() ) {
+        $MCCAdmin = new MailchimpAdmin();
+        $MCCampaigns = new MailchimpCampaigns();
+    }
 }
+add_action( 'init', 'mailchimpcampaigns_init' );
+
+// ADD BUTTON TO SYNC
+// $MCCampaigns->save();
 
 
 /*

@@ -25,9 +25,10 @@ class MailchimpAdmin extends Mailchimp
     {
         parent::__construct();
         $this->settings =  get_option('mailchimpcampaigns_settings');
+        add_action( 'contextual_help', array( $this, 'help_tab' ), 10, 3 );
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
-        add_action( 'update_option', array( $this, 'action_update_option'), 10, 3 ); 
+        add_action( 'update_option_mailchimpcampaigns_settings', array( $this, 'action_update_option'), 10, 3 ); 
     }
 
     /**
@@ -169,21 +170,36 @@ class MailchimpAdmin extends Mailchimp
         );
         print 
         '<p class="description">'.
-          __('Change this setting only if you want a custom Post Type url.', MCC_TXT_DOMAIN).
+          __('Lowercase only with no special character nor space.', MCC_TXT_DOMAIN).
           '<br/>'.
-          __('This settings must be one lowercase word only with no special character nor space.', MCC_TXT_DOMAIN).
+          __('Already imported campaigns are not deleted automatically.', MCC_TXT_DOMAIN).
           '<br/>'.
-          __('<u>Important</u>: already imported campaigns <strong>are not</strong> deleted automatically.', MCC_TXT_DOMAIN).
+          __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TXT_DOMAIN).
         '</p>';
     }
   
+    /*
+    * Help tab for admin screens
+    */
+    public function help_tab($contextual_help, $screen_id, $screen ){
+        $cpt = $this->post_type_name;
+        if ( $cpt == $screen->id || $screen_id == 'settings_page_mailchimpcampaigns-admin') {
+            $screen = get_current_screen();
+            $screen->add_help_tab( array(
+                'id' => $screen->id,
+                'title' => __('Synchronization'),
+                'content' => __('Help tab', MCC_TXT_DOMAIN),
+            ));
+        }
+    }
 
     /**
     * Do stuff on option update
     */
-    function action_update_option( $option, $old_value, $value ) {
-        if( 'mailchimpcampaigns_settings' == $option ) {
-            if( ($old_value['cpt_name'] != $value['cpt_name'] ) )
+    function action_update_option(  $old_value, $value, $option ) {
+         if( $option == 'mailchimpcampaigns_settings') {
+            $has_changed = ($old_value['cpt_name'] != $value['cpt_name']);
+            if( $has_changed )
                 flush_rewrite_rules(); // If CPT Name has changed
         } 
     }
@@ -207,5 +223,6 @@ class MailchimpAdmin extends Mailchimp
     public function logo($css){
         return '<img src="https://static.mailchimp.com/web/social/freddie.png" style="'.$css.'" />';
     }
+
 
 }

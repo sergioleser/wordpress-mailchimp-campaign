@@ -19,15 +19,14 @@
         parent::__construct();
         $this->post_type_name = isset( $this->settings->cpt_name ) && !empty($this->settings->cpt_name) ? $this->settings->cpt_name : MCC_DEFAULT_CPT;
         add_action( 'init', array( $this, 'register_post_type') );
-        add_action( 'contextual_help', array( $this, 'help_tab' ), 10, 3 );
     }
  
     /**
     * Custom Post Type
     */
-    public function register_post_type()
+    public function register_post_type($cpt = false)
     {
-        $cpt = $this->post_type_name;
+        $cpt = $cpt ? $cpt : $this->post_type_name;
         $labels = array(
             'name' => _x( ucfirst($cpt), 'Post type general name', MCC_TXT_DOMAIN ),
             'singular_name' => _x( $cpt, 'Post type singular name', MCC_TXT_DOMAIN ),
@@ -57,14 +56,14 @@
 
         $args = array(
             'labels' => $labels,
-            'public' =>  true,
-            'publicly_queryable' => true,
+            'public' => true,
+            //'publicly_queryable' => true,
+	        'has_archive' => true,
             'show_ui' => true,
             'show_in_menu' => true,
             'query_var' => true,
             'rewrite' => array( 'slug' => $cpt ),
             'capability_type' => 'post',
-            'has_archive' => true,
             'hierarchical' => false,
             'menu_icon' => 'dashicons-email',
             'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments', 'custom-fields' ),
@@ -72,22 +71,7 @@
         register_post_type( $cpt, $args);
     }
 
-    /*
-    * Help tab for admin screens
-    */
-    public function help_tab($contextual_help, $screen_id, $screen ){
-        $cpt = $this->post_type_name;
-        if ( 'edit-'.$cpt == $screen->id ) {
-            $screen = get_current_screen();
-            $screen->add_help_tab( array(
-                'id' => $screen->id,
-                'title' => __('Synchronization'),
-                'content' => __('Help tab', MCC_TXT_DOMAIN),
-            ));
-        }
-    }
+
 
 }
 
-// Instanciate our class 
-$MCCCustomPostTYpe = new MailchimpCustomPostType();

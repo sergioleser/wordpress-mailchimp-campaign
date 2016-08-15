@@ -14,7 +14,7 @@
 class Mailchimp {
 
 	// Private settings
-	private $settings;
+	protected $settings;
 
 	// Public settings
 	public $is_error = false;
