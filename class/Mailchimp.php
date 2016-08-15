@@ -14,17 +14,13 @@
 class Mailchimp {
 
 	// Private settings
-	private $api_key;
+	private $settings;
 
 	// Public settings
-	public $settings;
-	public $api_authname;
-	public $api_datacentre;
-	public $api_endpoint;
-	public $api_version = '3.0';
 	public $is_error = false;
 	public $last_error;
 	public $last_call;
+	public $last_updated;
 	public $data;
 
 	/**
@@ -33,18 +29,18 @@ class Mailchimp {
 	 */
 	public function __construct()
 	{
-		$this->settings = get_option('mailchimpcampaigns_settings');
-		$this->api_authname = isset($this->settings['api_authname']) ? $this->settings['api_authname'] : false;
-		$this->api_key = isset($this->settings['api_key']) ? $this->settings['api_key'] : false;
-
-		// Die here if no API Key...
-		if( !$this->api_key)
-			return new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TEXT_DOMAIN) );
 		
-		// ...or continue if we have an API Key
-		list(, $datacentre) = explode('-', $this->api_key);
-		$this->api_datacentre = $datacentre;
-		$this->api_endpoint = 'https://'. $this->api_datacentre.'.api.mailchimp.com/'.$this->api_version;	
+		$this->settings = (object)get_option('mailchimpcampaigns_settings');
+		// Die here if no API Key...
+		if( !$this->settings->api_key )
+			return new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TEXT_DOMAIN) );
+
+		list(, $datacentre) = explode('-', $this->settings->api_key);
+		$this->settings->api_datacentre = $datacentre;
+		$this->settings->api_version =  MCC_API_VERSION;
+		$this->settings->api_endpoint = 'https://'. $this->settings->api_datacentre.'.api.mailchimp.com/'.$this->settings->api_version;	
+		
+		$this->last_updated	= current_time( 'mysql' );
 
 	}
 
@@ -52,22 +48,13 @@ class Mailchimp {
 	 * Shortcut for $this->call()
 	 * @return boolean False if call raised an error
 	 */
-	public function init($test = ''){
-		return ! $this->call($test)->is_error();
+	public function test($method = null, $args = false, $timeout = 10)
+	{
+		return ! $this->call($method, $args, $timeout)->is_error();
 	}
 
+	
 	/**
-	 * Shortcut to get Mailchimp instance
-	 * @param string $prop One property of this class 
-	 * @return object property's' value
-		 */
-	 public function get($prop)
-	 {
-		 $data = $this->{$prop}; 
-		 return ( is_object($data) || is_array($data) ) ? (object)$data : $data;
-	 }
-
-	/*
 		* Determine if a call return an error
 		* @param object $ The call's , previously decoded by our custom property $this->decode().
 		* @return boolean/array If true, will return an associative array of the error. Otherwise return false directly.
@@ -111,17 +98,26 @@ class Mailchimp {
 	public function call($method = null, $args = false, $timeout = 10)
 	{
 			$query = $args ? '?'.http_build_query($args) : '';
-			$url = $this->api_endpoint.'/'.$method . $query;
+			$url = $this->settings->api_endpoint.'/'.$method . $query;
 			$auth = array(
 					'headers' => array(
-							'Authorization' => 'Basic ' . base64_encode( $this->auth_name . ':' . $this->api_key )
+							'Authorization' => 'Basic ' . base64_encode( $this->settings->auth_name . ':' . $this->settings->api_key )
 					)
 			);
 			$this->last_call = wp_remote_request( $url, $auth );
 			return $this;
 	}
 
-}
+	/**
+ 	 * Shortcut to get Mailchimp instance
+	 * @param string $prop One property of this class 
+	 * @return object property's' value
+	 */
+	public function get($prop = 'last_call')
+	{
+		$data = $this->{$prop}; 
+		return ( is_object($data) || is_array($data) ) ? (object)$data : $data;
+	}
 
-// Instanciate our class 
-$MCC = new Mailchimp();
+
+}

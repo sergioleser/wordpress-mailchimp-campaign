@@ -209,7 +209,3 @@ class MailchimpAdmin extends Mailchimp
     }
 
 }
-
-// Instanciate our class 
-if( is_admin() )
-    $MCCAdmin = new MailchimpAdmin();

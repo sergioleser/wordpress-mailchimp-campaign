@@ -1,5 +1,8 @@
 <?php
    
+/**
+ *
+ */
  class MailchimpCustomPostType extends Mailchimp
  {
 
@@ -14,11 +17,10 @@
     public function __construct()
     {
         parent::__construct();
-        $this->post_type_name = isset( $this->settings['cpt_name'] ) && !empty($this->settings['cpt_name']) ? $this->settings['cpt_name'] : MCC_DEFAULT_CPT;
+        $this->post_type_name = isset( $this->settings->cpt_name ) && !empty($this->settings->cpt_name) ? $this->settings->cpt_name : MCC_DEFAULT_CPT;
         add_action( 'init', array( $this, 'register_post_type') );
         add_action( 'contextual_help', array( $this, 'help_tab' ), 10, 3 );
     }
-
  
     /**
     * Custom Post Type
