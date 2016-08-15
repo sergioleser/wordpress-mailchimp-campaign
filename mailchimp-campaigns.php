@@ -26,27 +26,32 @@ define( 'MCC_META_PRE', 'mcc_' );
 define( 'MCC_META_KEY_ID', MCC_META_PRE .'id' );
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 
-
-// Instanciate things
-include( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
-include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
+// Get required files
+require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
+require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
 new MailchimpCustomPostType();
 
-function mailchimpcampaigns_init(){
-    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
-    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
-    include( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
+/**
+ * Include required files
+ */
+function mailchimpcampaigns_include_files(){
+    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
+    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
+    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
+}
 
+/**
+ * Function load on HOOK INIT
+ */
+function mailchimpcampaigns_init(){
+    // Load our classes
+    mailchimpcampaigns_include_files();
     if( is_admin() ) {
         $MCCAdmin = new MailchimpAdmin();
         $MCCampaigns = new MailchimpCampaigns();
     }
 }
 add_action( 'init', 'mailchimpcampaigns_init' );
-
-// ADD BUTTON TO SYNC
-// $MCCampaigns->save();
-
 
 /*
  * Plugin setting link
@@ -74,3 +79,11 @@ function mailchimpcampaigns_rewrite_flush() {
     flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'mailchimpcampaigns_rewrite_flush' );
+
+/**
+ * Syncronize CPT with Mailchimp
+ */
+function mailchimpcampaigns_sync(){
+    $MCCampaigns = new MailchimpCampaigns();
+    $MCCampaigns->save();
+}
