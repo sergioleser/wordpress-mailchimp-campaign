@@ -33,7 +33,7 @@ class MailchimpCampaigns extends Mailchimp
     /**
      *
      */
-    public function save($renew = true)
+    public function import($renew = true)
     {
         if( $renew )
             $this->fetch();

@@ -25,8 +25,9 @@ class MailChimpCampaign
   public function __construct($campaign)
   {
     $this->campaign = $campaign;
-    $this->settings =  get_option('mailchimpcampaigns_settings', MCC_DEFAULT_CPT);
-    $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->cpt_name; 
+    $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
+    $this->post_type_previous = empty($this->settings->cpt_name_previous) ? MCC_DEFAULT_CPT : $this->settings->cpt_name_previous;
+    $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
     $this->get(); // either get exisitng campaign CPT or an empty Post object
     $this->post_metas = array();
   }  
@@ -39,6 +40,7 @@ class MailChimpCampaign
   {
     $args = array(
         'post_type'  => $this->post_type,
+        'posts_per_page'   => 1,
         'meta_query' => array(
             array(
                 'key'   => MCC_META_KEY_ID,
@@ -98,7 +100,6 @@ class MailChimpCampaign
   {
     // Save || Update post
     $post_id = $this->post_exists ? wp_update_post( $this->post, true) : wp_insert_post( $this->post, true);
-
     // Save || Update post metas
     foreach( $this->post_metas as $meta_key => $meta_value ){
       $unique = ($meta_key == MCC_META_PRE . 'id') ? true : false;

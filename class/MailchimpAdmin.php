@@ -28,7 +28,7 @@ class MailchimpAdmin extends Mailchimp
         add_action( 'contextual_help', array( $this, 'help_tab' ), 10, 3 );
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
-        add_action( 'update_option_mailchimpcampaigns_settings', array( $this, 'action_update_option'), 10, 3 ); 
+        add_action( 'update_option_mailchimpcampaigns_settings', array( $this, 'action_update_option'), 10, 3 );
     }
 
     /**
@@ -59,7 +59,8 @@ class MailchimpAdmin extends Mailchimp
                 // This prints out all hidden setting fields
                 settings_fields( 'mailchimpcampaign_option_group' );
                 do_settings_sections( 'mailchimpcampaign-admin' );
-                submit_button();
+                // submit_button();
+                submit_button( 'Submit', 'primary', 'submit-form', false );
             ?>
             </form>
         </div>
@@ -108,6 +109,14 @@ class MailchimpAdmin extends Mailchimp
             'mailchimpcampaigns_settings_section', // Section     
             array( 'label_for' => 'mailchimpcampaigns_cpt_name' ) // Form label
         );
+        add_settings_field(
+            'import',
+            __('Import', MCC_TXT_DOMAIN),
+            array( $this, 'field_import_callback' ), // Callback
+            'mailchimpcampaign-admin', // Page
+            'mailchimpcampaigns_settings_section', // Section     
+            array( 'label_for' => 'mailchimpcampaigns_import' ) // Form label
+        );
     
     }
 
@@ -127,7 +136,10 @@ class MailchimpAdmin extends Mailchimp
 
         if( isset( $input['cpt_name'] ) )
             $new_input['cpt_name'] = sanitize_title( sanitize_text_field( $input['cpt_name'] ) );
-     
+        if( isset( $input['import'] ) ) {
+            $this->import();
+        }
+
         return $new_input;
     }
 
@@ -147,7 +159,7 @@ class MailchimpAdmin extends Mailchimp
             '<input class="code" type="text" id="api_authname" name="mailchimpcampaigns_settings[api_authname]" value="%s" />',
             isset( $this->settings['api_authname'] ) ? esc_attr( $this->settings['api_authname']) : ''
         );
-        print '<p class="description">'. __('Let Mailchimp know who you are', MCC_TXT_DOMAIN).' :)</p>';
+        print '<p class="description">'. __('Let Mailchimp knows who you are', MCC_TXT_DOMAIN).' :)</p>';
     }
     public function field_api_key_callback() {
         printf(
@@ -172,10 +184,15 @@ class MailchimpAdmin extends Mailchimp
         '<p class="description">'.
           __('Lowercase only with no special character nor space.', MCC_TXT_DOMAIN).
           '<br/>'.
-          __('Already imported campaigns are not deleted automatically.', MCC_TXT_DOMAIN).
-          '<br/>'.
           __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TXT_DOMAIN).
+          '<br/>'.
+          '<strong>'.__('Already imported campaigns are not deleted automatically.', MCC_TXT_DOMAIN). '</strong>'.
         '</p>';
+    }
+    public function field_import_callback() {
+        // submit_button( 'Syncronize', 'secondary', 'sync-campaigns', false );
+        echo '<input type="checkbox" id="import" name="mailchimpcampaigns_settings[import]" value="import"  />' .
+        ' Check this to import your campaigns from MailChimp';
     }
   
     /*
@@ -196,12 +213,20 @@ class MailchimpAdmin extends Mailchimp
     /**
     * Do stuff on option update
     */
-    function action_update_option(  $old_value, $value, $option ) {
+    public function action_update_option(  $old_value, $value, $option ) {
          if( $option == 'mailchimpcampaigns_settings') {
             $has_changed = ($old_value['cpt_name'] != $value['cpt_name']);
             if( $has_changed )
                 flush_rewrite_rules(); // If CPT Name has changed
         } 
+    }
+
+    /**
+     * Import Mailchimp Campaigns
+     */
+    public function import(){
+        $MCCampaigns = new MailchimpCampaigns();
+        return $MCCampaigns->import();
     }
 
     /**

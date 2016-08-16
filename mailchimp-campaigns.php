@@ -87,3 +87,25 @@ function mailchimpcampaigns_sync(){
     $MCCampaigns = new MailchimpCampaigns();
     $MCCampaigns->save();
 }
+
+/*
+ * Compatibility issue management
+ * Aims to solve issues with previous versions
+ * @return void
+ */
+function mailchimpcampaigns_compatibilty() {
+    // Save the previous API Key and delete it
+    $old_api_key = get_option('ola_mccp_api_key', false) || get_option('olalaweb_mailchimp_api_key', false);
+    $settings = array( 'api_key' => $old_api_key); 
+    if ( $old_api_key ) {
+        // Delete previous option entries
+        if ( get_option('ola_mccp_api_key', false) ) 
+            delete_option('ola_mccp_api_key');
+        if ( get_option('olalaweb_mailchimp_api_key', false) )
+            delete_option('olalaweb_mailchimp_api_key');
+        // Save new settings
+        add_option('mailchimpcampaigns_settings', $settings ); // return nothing it already exists
+        update_option('mailchimpcampaigns_settings', $settings );// update it just in case
+    }
+}
+register_activation_hook( __FILE__, 'mailchimpcampaigns_rewrite_flush' );
