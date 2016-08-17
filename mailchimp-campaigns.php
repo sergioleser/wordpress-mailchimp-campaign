@@ -44,16 +44,24 @@ function mailchimpcampaigns_include_files(){
 /**
  * Function load on HOOK INIT
  */
-function mailchimpcampaigns_init(){
-    // Load our classes
+function mailchimpcampaigns_init_action(){
+    // Include file on init
     mailchimpcampaigns_include_files();
+
+    // Load our classes
     if( is_admin() ) {
         $MCCAdmin = new MailchimpAdmin();
         $MCCampaigns = new MailchimpCampaigns();
-        $MCCampaignsMetabox = new MailchimpCampaignMetabox();
     }
 }
-add_action( 'init', 'mailchimpcampaigns_init' );
+add_action( 'init', 'mailchimpcampaigns_init_action' );
+
+function mailchimpcampaigns_edit_screen(){
+    $MCCampaignsMetabox = new MailchimpCampaignMetabox();
+}
+// add_action( 'edit_form_top', 'mailchimpcampaigns_edit_form_action' );
+add_action('load-post.php', 'mailchimpcampaigns_edit_screen', 10, 2);
+add_action('load-post-new.php', 'mailchimpcampaigns_edit_screen', 10, 2);
 
 /*
  * Plugin setting link

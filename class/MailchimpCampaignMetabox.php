@@ -8,39 +8,37 @@ class MailchimpCampaignMetabox
  
     // Settings
     public $settings;
+    public $post;
+    public $post_type;
 
   /**
     * Constructor.
     */
   public function __construct() {
     global $post;
-    var_dump($post->post_type);
+    $this->post = $post;
     $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
     $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
-
-    if (  is_admin() ) {
-          add_action( 'load-post.php',     array( $this, 'init_metabox' ) );
-          add_action( 'load-post-new.php', array( $this, 'init_metabox' ) );
-      }
+    $this->init_metabox();
   }
  
   /**
   * Meta box initialization.
   */
   public function init_metabox() {
-    add_action( 'add_meta_boxes_'.$this->post_type, array( $this, 'add_metabox'  )        );
+    add_action( 'add_meta_boxes', array( $this, 'add_metabox'  ) );
     add_action( 'save_post',      array( $this, 'save_metabox' ), 10, 2 );
   }
 
   /**
   * Adds the meta box.
   */
-  public function add_metabox() {
+  public function add_metabox( ) {
     add_meta_box(
         'my-meta-box',
         __( 'My Meta Box', 'textdomain' ),
         array( $this, 'render_metabox' ),
-        'post',
+        $this->post_type,
         'advanced',
         'default'
     );
@@ -53,6 +51,8 @@ class MailchimpCampaignMetabox
   public function render_metabox( $post ) {
     // Add nonce for security and authentication.
     wp_nonce_field( 'custom_nonce_action', 'custom_nonce' );
+    $output =  'test';
+    echo $output;
   }
 
   /**
