@@ -38,6 +38,7 @@ function mailchimpcampaigns_include_files(){
     require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
     require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
     require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
+    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaignMetabox.php');
 }
 
 /**
@@ -49,6 +50,7 @@ function mailchimpcampaigns_init(){
     if( is_admin() ) {
         $MCCAdmin = new MailchimpAdmin();
         $MCCampaigns = new MailchimpCampaigns();
+        $MCCampaignsMetabox = new MailchimpCampaignMetabox();
     }
 }
 add_action( 'init', 'mailchimpcampaigns_init' );

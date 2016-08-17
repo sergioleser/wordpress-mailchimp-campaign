@@ -18,6 +18,7 @@ class MailChimpCampaign
   public $post_exists = false;
   public $post_type;
   public $post_metas;
+  public $settings;
 
   /**
     * Start up
@@ -26,17 +27,17 @@ class MailChimpCampaign
   {
     $this->campaign = $campaign;
     $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
-    $this->post_type_previous = empty($this->settings->cpt_name_previous) ? MCC_DEFAULT_CPT : $this->settings->cpt_name_previous;
     $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
-    $this->get(); // either get exisitng campaign CPT or an empty Post object
+    $this->find(); // get exisitng $post or create a new empty Post object
     $this->post_metas = array();
   }  
 
   /**
-   * Populate with the exisitng campaign CPT or an empty Post object
+   * Find exisitng campaign in database
+   * This function populates $this->post with the WP Post object
    * @return $this
    */
-  public function get()
+  public function find()
   {
     $args = array(
         'post_type'  => $this->post_type,
@@ -48,13 +49,16 @@ class MailChimpCampaign
             )
         )
     );
+    // Query the dabatase
     $posts = get_posts( $args );
+
+    // Populate $this->post with the $post 
     if( count( $posts ) > 0 ) {
       $this->post = $posts[0];
       $this->post_exists = true;
     }
+    // Populate $this->post with a new defautl post object
     else {
-      // Populate an empty post object
       $this->post = new WP_Post((object)array(
         'post_author' => get_current_user_id(),
         'post_type' => $this->post_type,
@@ -64,9 +68,9 @@ class MailChimpCampaign
   }
 
   /**
-  *
+  * Instanciate a new Campaign Post object
   */
-  public function set()
+  public function init()
   {
     // Populate required fields
     $title= !empty($this->campaign->settings->title) ? $this->campaign->settings->title : __('Empty title', MCC_TXT_DOMAIN);
@@ -91,6 +95,31 @@ class MailChimpCampaign
     }
     
     return $this;
+  }
+
+  /**
+   * Get a Mailchimp campaign content 
+   * or any other scope available throught the API
+   * @return mixed object || false
+   */
+  public function get($scope = 'content'){
+    $mc = new MailChimp();
+    $scope = '/'. $scope;
+    $campaign = $mc->call('campaigns/'.$this->campaign->id.$scope);
+    return  $campaign;
+  }
+
+  /**
+    * Save a new value
+    * return true ||WP Error
+    */
+  public function set($prop, $value){
+    if( isset( $this->post->${prop} ) ) {
+      $this->post->${prop} = $value;
+      return true;
+    } else {
+      throw new WP_Error('property does not exist', __('This property does not exist' . ' ' . $prop, MCC_TEXT_DOMAIN ) );
+    }
   }
 
   /**
