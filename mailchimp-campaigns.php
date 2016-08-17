@@ -42,9 +42,9 @@ function mailchimpcampaigns_include_files(){
 }
 
 /**
- * Function load on HOOK INIT
+ * Implements hook init
  */
-function mailchimpcampaigns_init_action(){
+function mailchimpcampaigns_init(){
     // Include file on init
     mailchimpcampaigns_include_files();
 
@@ -54,8 +54,11 @@ function mailchimpcampaigns_init_action(){
         $MCCampaigns = new MailchimpCampaigns();
     }
 }
-add_action( 'init', 'mailchimpcampaigns_init_action' );
+add_action( 'init', 'mailchimpcampaigns_init' );
 
+/**
+ * Add Metaboxes to CPT admin screens
+ */
 function mailchimpcampaigns_edit_screen(){
     $MCCampaignsMetabox = new MailchimpCampaignMetabox();
 }
@@ -63,7 +66,7 @@ function mailchimpcampaigns_edit_screen(){
 add_action('load-post.php', 'mailchimpcampaigns_edit_screen', 10, 2);
 add_action('load-post-new.php', 'mailchimpcampaigns_edit_screen', 10, 2);
 
-/*
+/**
  * Plugin setting link
  * Displays a direct link to the WordPress plugin admin page
  * @param $links
@@ -81,7 +84,7 @@ function mailchimpcampaigns_settings_link($links, $file) {
 }
 add_filter('plugin_action_links', 'mailchimpcampaigns_settings_link', 10, 2 );
 
-/*
+/**
  * Rewrite flush
  * Used on plugin activation hook to register our post type
  */
