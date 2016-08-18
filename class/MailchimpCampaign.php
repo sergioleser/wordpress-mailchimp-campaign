@@ -56,6 +56,7 @@ class MailChimpCampaign extends Mailchimp
     if( count( $posts ) > 0 ) {
       $this->post = $posts[0];
       $this->post_exists = true;
+      $this->post_metas = get_post_meta( $this->post->ID);
     }
     // Populate $this->post with a new defautl post object
     else {
@@ -113,7 +114,7 @@ class MailChimpCampaign extends Mailchimp
     foreach($scopes as $scope){
       // Save specific data for each scope
       $data = $this->call('campaigns/'.$this->campaign->id.'/'.$scope)->get();
-      $this->set($scope, $data);
+      $this->meta($scope, $data);
     }
     return  $this;
   }
@@ -121,15 +122,16 @@ class MailChimpCampaign extends Mailchimp
   /**
     * Save specific data for each scope
     */
-  public function set($scope, $data){
-    // Declare empty scope if necessary
-    if( ! isset( $this->{$scope} ) )
-      $this->{$scope} = (object)array();
-
+  public function meta($meta_key, $meta_value){
+    $scope = $meta_key;
+    $meta_key = MCC_META_PRE . $meta_key;
     switch($scope){
+      default:
+        $this->post_metas[$meta_key] = $meta_value;      
+        break;
       case 'content':
-        $this->{$scope}->plain_text = isset($data->plain_text) ? $data->plain_text : null;      
-        $this->{$scope}->html = isset($data->html) ? $data->html : null;
+        $this->post_metas[$meta_key . '_plain_text'] = $meta_value->plain_text; 
+        $this->post_metas[$meta_key . '_html'] = $meta_value->html;
         break;
       case 'feedback':
         // TODO

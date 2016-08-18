@@ -41,7 +41,7 @@ class MailchimpCampaigns extends Mailchimp
         $campaigns = $this->campaigns();
         foreach( $campaigns as $i => $campaign){
             $mcc = new MailchimpCampaign($campaign);
-            $mcc->init()->save()->fetch(); // Empty arg = get all available scopes
+            $mcc->init()->fetch()->save(); // Get content for this campaigns 
             unset($campaigns[$i]); // Remove campaigns from array() just for fun
         }
         // Display result
