@@ -17,6 +17,7 @@ class MailchimpCampaignMetabox
   public function __construct() {
     global $post;
     $this->post = $post;
+    // $this->campaign = new MailChimpCampaign();
     $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
     $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
     $this->init_metabox();
@@ -35,12 +36,12 @@ class MailchimpCampaignMetabox
   */
   public function add_metabox( ) {
     add_meta_box(
-        'my-meta-box',
-        __( 'My Meta Box', 'textdomain' ),
+        'mailchimpcampaigns-box',
+        __( 'Mailchimp', MCC_TXT_DOMAIN ),
         array( $this, 'render_metabox' ),
         $this->post_type,
-        'advanced',
-        'default'
+        'normal',
+        'high'
     );
 
   }
@@ -50,8 +51,9 @@ class MailchimpCampaignMetabox
   */
   public function render_metabox( $post ) {
     // Add nonce for security and authentication.
-    wp_nonce_field( 'custom_nonce_action', 'custom_nonce' );
-    $output =  'test';
+    $output = '';
+    $output .= 'Syncronize content';
+    $output .= wp_nonce_field( 'mailchimpcampaigns_nonce_action', 'mailchimpcampaigns_nonce' );
     echo $output;
   }
 
@@ -64,8 +66,8 @@ class MailchimpCampaignMetabox
   */
   public function save_metabox( $post_id, $post ) {
     // Add nonce for security and authentication.
-    $nonce_name   = isset( $_POST['custom_nonce'] ) ? $_POST['custom_nonce'] : '';
-    $nonce_action = 'custom_nonce_action';
+    $nonce_name   = isset( $_POST['mailchimpcampaigns_nonce'] ) ? $_POST['mailchimpcampaigns_nonce'] : '';
+    $nonce_action = 'mailchimpcampaigns_nonce_action';
 
     // Check if nonce is set.
     if ( ! isset( $nonce_name ) ) {

@@ -10,7 +10,7 @@
  * @version 1.0.0
  */
 
-class MailChimpCampaign
+class MailChimpCampaign extends Mailchimp
 {
   // Settings
   public $campaign;
@@ -25,8 +25,8 @@ class MailChimpCampaign
    */
   public function __construct($campaign)
   {
+    parent::__construct();
     $this->campaign = $campaign;
-    $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
     $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
     $this->find(); // get exisitng $post or create a new empty Post object
     $this->post_metas = array();
@@ -101,25 +101,44 @@ class MailChimpCampaign
    * Get a Mailchimp campaign content 
    * or any other scope available throught the API
    * @return mixed object || false
+   * @see developer.mailchimp.com/documentation/mailchimp/reference/campaigns/
    */
-  public function get($scope = 'content'){
-    $mc = new MailChimp();
-    $scope = '/'. $scope;
-    $campaign = $mc->call('campaigns/'.$this->campaign->id.$scope);
-    return  $campaign;
+  public function fetch($scopes = false){
+    if( !$scopes ) 
+      $scopes = array( 'content', 'feedback', 'send-checklist' ); // All available scope as per the doc (@see above)
+
+    if( !is_array($scopes) ) 
+      $scopes = array($scopes);
+    
+    foreach($scopes as $scope){
+      // Save specific data for each scope
+      $data = $this->call('campaigns/'.$this->campaign->id.'/'.$scope)->get();
+      $this->set($scope, $data);
+    }
+    return  $this;
   }
 
   /**
-    * Save a new value
-    * return true ||WP Error
+    * Save specific data for each scope
     */
-  public function set($prop, $value){
-    if( isset( $this->post->${prop} ) ) {
-      $this->post->${prop} = $value;
-      return true;
-    } else {
-      throw new WP_Error('property does not exist', __('This property does not exist' . ' ' . $prop, MCC_TEXT_DOMAIN ) );
+  public function set($scope, $data){
+    // Declare empty scope if necessary
+    if( ! isset( $this->{$scope} ) )
+      $this->{$scope} = (object)array();
+
+    switch($scope){
+      case 'content':
+        $this->{$scope}->plain_text = isset($data->plain_text) ? $data->plain_text : null;      
+        $this->{$scope}->html = isset($data->html) ? $data->html : null;
+        break;
+      case 'feedback':
+        // TODO
+        break;
+      case 'send-checklist':
+        // TODO
+        break;
     }
+    return $this;
   }
 
   /**

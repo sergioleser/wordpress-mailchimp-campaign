@@ -14,7 +14,7 @@ class MailchimpCampaigns extends Mailchimp
     /**
      *
      */
-    public function get($renew = false)
+    public function campaigns($renew = false)
     {
         if( $renew )
             $this->fetch();
@@ -38,10 +38,10 @@ class MailchimpCampaigns extends Mailchimp
         if( $renew )
             $this->fetch();
 
-        $campaigns = $this->get();
+        $campaigns = $this->campaigns();
         foreach( $campaigns as $i => $campaign){
             $mcc = new MailchimpCampaign($campaign);
-            $mcc->init()->save();
+            $mcc->init()->save()->fetch(); // Empty arg = get all available scopes
             unset($campaigns[$i]); // Remove campaigns from array() just for fun
         }
         // Display result

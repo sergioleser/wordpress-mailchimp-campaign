@@ -115,8 +115,20 @@ class Mailchimp {
 	 */
 	public function get($prop = 'last_call')
 	{
-		$data = $this->{$prop}; 
-		return ( is_object($data) || is_array($data) ) ? (object)$data : $data;
+		$data = $this->{$prop};
+		
+		if( isset($data->body) ) {
+			$data = $data->body;
+		}
+		if( isset($data['body']) ) {
+			$data = $data['body'];
+		}
+
+		// Decode data
+		$data = json_decode($data) != null ? json_decode($data) : $data;
+		$data = ( is_object($data) || is_array($data) ) ? (object)$data : $data;
+
+		return $data;
 	}
 
 
