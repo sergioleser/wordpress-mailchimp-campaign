@@ -70,7 +70,7 @@ class MailchimpCampaignMetabox
     // Save the $post object now
     // because was not available anytime before
     if( ! $this->post )
-      $this->post = $post;
+      $this->post = new MailchimpPost($post);
 
      // Switch over metaboxes ID
     $output = '';
@@ -78,29 +78,28 @@ class MailchimpCampaignMetabox
       default:
         break;
       case 'preview':
-        $output = $this->get_meta('content_html', true);
+        $output = $this->post->get_meta('content_html', true);
         break;
       case 'stats':
-        $this->prepare_post_metas(); // populate metas if not done yet
-        if( $this->post_metas ) 
+        if( $this->post->post_metas ) 
         {
-          foreach( $this->post_metas as $meta_key => $meta_value)
+          foreach( $this->post->post_metas as $meta_key => $meta_value)
           {
-            $real_meta_key = $this->get_meta_key($meta_key); 
-            $meta_key_label = $this->get_meta_label($meta_key); 
+            $real_meta_key = $this->post->get_meta_key($meta_key); 
+            $meta_key_label = $this->post->get_meta_label($meta_key); 
             $stats_keys = array( 'id', 'type', 'create_time', 'archive_url', 'status', 'send_time', 'emails_sent', 'content_type');
             if( in_array($real_meta_key, $stats_keys  ) )
-              echo $this->display_meta( $meta_key_label, current($meta_value) );
+              echo $this->post->display_meta( $meta_key_label, current($meta_value) );
           }   
         }
         break;
       case 'list':
-        $list_data =  $this->get_meta('recipients', true);
+        $list_data =  $this->post->get_meta('recipients', true);
         if( $list_data )
         {
           foreach( $list_data as $meta_key => $meta_value)
           {
-            echo $this->display_meta( MCC_META_MAP[$meta_key], $meta_value );
+            echo $this->post->display_meta( MCC_META_MAP[$meta_key], $meta_value );
           }
         }
         break;
@@ -152,66 +151,6 @@ class MailchimpCampaignMetabox
     if ( wp_is_post_revision( $post_id ) ) {
         return;
     }
-  }
-
-
-  /**
-  * Save post metadata when needed
-  */
-  public function prepare_post_metas()
-  {
-    if( ! $this->post_metas )
-      $this->post_metas = (object) get_post_meta($this->post->ID);
-  }
-  
-  /**
-  *
-  *
-  */
-  public function get_meta($meta_key, $single = false)
-  {
-    $this->prepare_post_metas();
-    $real_meta_key =   MCC_META_PRE . $meta_key;  
-    $meta = isset($this->post_metas->{$real_meta_key}) ? $this->post_metas->{$real_meta_key} : get_post_meta( $this->post->ID, $real_meta_key, $single );
-    $meta = maybe_unserialize( current($meta) );
-    return $meta;
-  }
-
-  /**
-  * Remove prefix from meta key
-  */
-  public function get_meta_key($meta_key)
-  {
-    $prefix_length = strlen(MCC_META_PRE);
-     if( substr($meta_key, 0, $prefix_length ) == MCC_META_PRE )
-       $meta_key = substr($meta_key, $prefix_length);
-    
-    return $meta_key;
-  }
-  
-  /**
-  *
-  */
-  public function get_meta_label($meta_key)
-  {
-    return MCC_META_MAP[$this->get_meta_key($meta_key)]; 
-  }
-
-  /**
-  *
-  */
-  public function display_meta($meta_key = null, $meta_value = null)
-  {
-    $is_link = (substr($meta_value, 0, 4) == 'http' );
-    $echo =  $meta_value;
-    if( $is_link )
-      $echo = '<a class="mcc__meta-link" href=" '.$meta_value.' " target="_blank">'.$echo.'</a>';
-
-    return 
-      '<p class="mcc__metabox">' .
-        '<span class="mcc__meta-key">'.$meta_key.'</span>'. 
-        '<span class="mcc__meta-value">' . $echo. '</span>'.
-      '</p>';
   }
 
 }
