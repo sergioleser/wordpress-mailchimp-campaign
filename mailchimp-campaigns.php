@@ -24,7 +24,38 @@ define( 'MCC_DEFAULT_CPT_STATUS',  'publish' );
 define( 'MCC_TEXT_DOMAIN', 'mailchimpcampaigns' );
 define( 'MCC_META_PRE', 'mcc_' );
 define( 'MCC_META_KEY_ID', MCC_META_PRE .'id' );
+define( 'MCC_META_MAP', array( 
+    'id' => __('ID', MCC_TEXT_DOMAIN),
+    'type' => _('Type', MCC_TEXT_DOMAIN),
+    'status' => _('Status', MCC_TEXT_DOMAIN),
+    'create_time' => _('Created on', MCC_TEXT_DOMAIN),
+    'send_time' => _('Sent on', MCC_TEXT_DOMAIN),
+    'emails_sent' => _('Emails sent', MCC_TEXT_DOMAIN),
+    'delivery_status' => _('Delivery status', MCC_TEXT_DOMAIN),
+    // Content
+    // mcc_content_plain_text
+    // mcc_content_html
+    'content_type' => _('Content type', MCC_TEXT_DOMAIN),
+    'archive_url' => _('Archive URL', MCC_TEXT_DOMAIN),
+    'long_archive_url' => _('Archive URL (long)', MCC_TEXT_DOMAIN),
+    // Lists related
+    'recipients' => _('Recipients', MCC_TEXT_DOMAIN),
+    'list_id' => _('List ID', MCC_TEXT_DOMAIN),
+    'list_name' => _('List name', MCC_TEXT_DOMAIN),
+    'segment_text' => _('Segment', MCC_TEXT_DOMAIN),
+    'recipient_count' => _('Recipients', MCC_TEXT_DOMAIN),
+    // Extra campaign settings
+    'settings' => _('Settings', MCC_TEXT_DOMAIN),
+    'tracking' => _('Tracking', MCC_TEXT_DOMAIN),
+    'social_card' => _('Social card', MCC_TEXT_DOMAIN),
+    'report_summary' => _('Report summary', MCC_TEXT_DOMAIN),
+    // Help related
+    '__links' => _('Action links', MCC_TEXT_DOMAIN),
+    '_edit_lock' => _('Edit lock', MCC_TEXT_DOMAIN),
+    '_edit_last' => _('Edit last', MCC_TEXT_DOMAIN),
+));
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
+
 
 // Get required files
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
@@ -42,28 +73,40 @@ function mailchimpcampaigns_include_files(){
 }
 
 /**
- * Implements hook init
+ * Enqueue plugin style-file
+ */
+function mailchimpcampaigns_add_css() {
+    wp_register_style( 'mailchimpcampaigns_metaboxes', plugins_url('css/mailchimpcampaigns_metaboxes.css', __FILE__) );
+    if( is_admin() )
+        wp_enqueue_style( 'mailchimpcampaigns_metaboxes' );
+}
+add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_css' );
+// add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
+
+/**
+ * Implements hook_init()
  */
 function mailchimpcampaigns_init(){
-    // Include file on init
     mailchimpcampaigns_include_files();
-
-    // Load our classes
-    if( is_admin() ) {
-        $MCCAdmin = new MailchimpAdmin();
-        $MCCampaigns = new MailchimpCampaigns();
-        set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
-    }
 }
 add_action( 'init', 'mailchimpcampaigns_init' );
+
+/**
+ * Implements hook admin_init()
+ */
+function mailchimpcampaigns_admin_init(){
+    $MCCAdmin = new MailchimpAdmin();
+    $MCCampaigns = new MailchimpCampaigns();
+    set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
+}
+add_action( 'admin_init', 'mailchimpcampaigns_admin_init' );
 
 /**
  * Add Metaboxes to CPT admin screens
  */
 function mailchimpcampaigns_edit_screen(){
-    $MCCampaignsMetabox = new MailchimpCampaignMetabox();
+    $MCCampaignsMetabox = new MailchimpCampaignMetabox($post);
 }
-// add_action( 'edit_form_top', 'mailchimpcampaigns_edit_form_action' );
 add_action('load-post.php', 'mailchimpcampaigns_edit_screen', 10, 2);
 add_action('load-post-new.php', 'mailchimpcampaigns_edit_screen', 10, 2);
 
