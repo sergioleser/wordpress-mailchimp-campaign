@@ -8,6 +8,8 @@ class MailchimpCampaigns extends Mailchimp
     public function __construct($args = array())
     {
         parent::__construct();
+        if( ! $this->test() ) 
+            return;
         $this->fetch();
     } 
 
@@ -60,7 +62,11 @@ class MailchimpCampaigns extends Mailchimp
             // 'fields' => array('id', 'type'),
         );
         $args = array_merge_recursive($default_args, $args);
-        $this->campaigns = json_decode( $this->call('campaigns', $args)->last_call['body'] );
+
+        $results = $this->call('campaigns', $args);
+        var_dump( $results );
+        var_dump( get_class($results) );
+        $this->campaigns = json_decode( $results->last_call['body'] );
         
         // Update the time 
         $this->last_updated = current_time( 'mysql' );

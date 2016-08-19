@@ -52,6 +52,7 @@ function mailchimpcampaigns_init(){
     if( is_admin() ) {
         $MCCAdmin = new MailchimpAdmin();
         $MCCampaigns = new MailchimpCampaigns();
+        set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
     }
 }
 add_action( 'init', 'mailchimpcampaigns_init' );
@@ -97,7 +98,7 @@ register_activation_hook( __FILE__, 'mailchimpcampaigns_rewrite_flush' );
  * Syncronize CPT with Mailchimp
  */
 function mailchimpcampaigns_sync(){
-    $MCCampaigns = new MailchimpCampaigns();
+    $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns());
     $MCCampaigns->save();
 }
 

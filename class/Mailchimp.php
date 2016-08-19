@@ -35,6 +35,9 @@ class Mailchimp {
 		if( !$this->settings->api_key )
 			return new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TEXT_DOMAIN) );
 
+		if( ! $this->test() ) 
+    	 return;
+
 		list(, $datacentre) = explode('-', $this->settings->api_key);
 		$this->settings->api_datacentre = $datacentre;
 		$this->settings->api_version =  MCC_API_VERSION;

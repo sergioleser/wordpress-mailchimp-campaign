@@ -36,11 +36,20 @@ class MailchimpCampaignMetabox
   */
   public function add_metabox( ) {
     add_meta_box(
-        'mailchimpcampaigns-box',
-        __( 'Mailchimp', MCC_TXT_DOMAIN ),
+        'mailchimpcampaigns-preview',
+        __( 'Campaign preview', MCC_TXT_DOMAIN ),
         array( $this, 'render_metabox' ),
         $this->post_type,
         'normal',
+        'high',
+        'preview'
+    );
+    add_meta_box(
+        'mailchimpcampaigns-stats',
+        __( 'Campaign statistics', MCC_TXT_DOMAIN ),
+        array( $this, 'render_metabox' ),
+        $this->post_type,
+        'side',
         'high'
     );
 
@@ -49,14 +58,28 @@ class MailchimpCampaignMetabox
   /**
   * Renders the meta box.
   */
-  public function render_metabox( $post ) {
-    // Add nonce for security and authentication.
+  public function render_metabox( $post, $box ) {
     $output = '';
-    $output .= 'Syncronize content';
+    switch($box['args']){
+      default:
+        $output = 'VIDE';
+        break;
+      case 'preview':
+        $output = $this->metabox_preview();
+        break;
+    }
     $output .= wp_nonce_field( 'mailchimpcampaigns_nonce_action', 'mailchimpcampaigns_nonce' );
     echo $output;
   }
 
+  /**
+   *
+   */
+  public function metabox_preview()
+  {
+    $content = 'YE';
+    return $content;
+  }
   /**
   * Handles saving the meta box.
   *

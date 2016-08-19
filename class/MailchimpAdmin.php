@@ -225,8 +225,8 @@ class MailchimpAdmin extends Mailchimp
      * Import Mailchimp Campaigns
      */
     public function import(){
-        $MCCampaigns = new MailchimpCampaigns();
-        return $MCCampaigns->import();
+        $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns()) ;
+        return $MCCampaigns->test() ? $MCCampaigns->import() : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TXT_DOMAIN));
     }
 
     /**

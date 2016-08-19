@@ -26,6 +26,9 @@ class MailChimpCampaign extends Mailchimp
   public function __construct($campaign)
   {
     parent::__construct();
+    if( ! $this->test() ) 
+      return;
+      
     $this->campaign = $campaign;
     $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
     $this->find(); // get exisitng $post or create a new empty Post object
