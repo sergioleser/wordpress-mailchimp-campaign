@@ -165,32 +165,29 @@ class MailChimpCampaign extends Mailchimp
   /**
    *
    */
-   public function delete()
-   {
-
-   }
-  
-  /**
-   *
-   */
-   public function edit()
-   {
-   }
+  public function delete()
+  {
+  }
 
   /**
    *
    */
-   public function send()
-   {
-
-   }
+  public function edit()
+  {
+  }
 
   /**
    *
    */
-   public function schedule()
-   {
+  public function send()
+  {
+  }
 
-   }
+  /**
+   *
+   */
+  public function schedule()
+  {
+  }
 
 }
