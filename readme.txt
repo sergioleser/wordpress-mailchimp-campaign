@@ -11,20 +11,15 @@ Display your MailChimp campaigns, the easy way.
 
 == Description ==
 
-This plugin allows you to **display your campaigns in your Post, Page or Custom Post Type using a simple Shortcode**.
-Display your campaigns as **HTML**.
-Simply requires a free MailChimp API key.
+This plugin allows you to **display your Mailchim campaigns in your WordPress site with simple [embed](https://codex.wordpress.org/Embeds) content**.
+Import your campaigns in WordPress as custom posts and display them anywhere you want with just a copy/paste of the internal URL.
+ You can display your campaigns as **HTML** in any Post, Widget, Page or Custom Post Type. 
+Simply requires a free MailChimp API key. 
 
 <h4>Features</h4>
-* Sync your MailChimp campaigns
-* See all your campaigns in WordPress
-* Display your newsletters with a simple shortcode
-* Support Post, Page and Custom Post Types
-
-<h4>Available Shortcodes</h4>
-**[campaign id="1234567890"]**
-Display a campaign in your post.
-
+* Import your MailChimp campaigns in WordPress
+* List all your campaigns with their statistics  in WordPress
+* Display your newsletter as HTML anywhere you want
 
 == Installation ==
 
@@ -33,25 +28,12 @@ Display a campaign in your post.
 1. Activate it from WordPress &raquo; Plugins admin screen
 1. Go to Settings and scroll down until 'MailChimp Campaigns' section
 1. Save your username and your API Key
-1. See your MailChimp campaigns in WordPress in the new menu 'Newsletter'
 
 = Plugin usage =
-1. Copy a campaign shortcode (see screenshot)
-1. Create a new post/page
-1. Insert the shorcode in the content
-1. Save or update your post.
+1. Import your campaigns in WordPress from the settings screen
+1. Copy/paste a new imported campaign post's url in a Post or a Page of your site
 
 == Frequently Asked Questions ==
-
-= How to use this plugin =
-1. Copy a campaign shortcode (see screenshot)
-1. Create a new post/page
-1. Insert the shorcode in the content
-1. Save or update your post.
-
-= Available Shortcodes =
-**[campaign id="1234567890"]**
-Display a campaign in your post.
 
 = How to find my MailChimp API Key ?  =
 1. Log into your [MailChimp](http://mailchimp.com/ "MailChimp") account
@@ -61,16 +43,15 @@ Display a campaign in your post.
 
 == Screenshots ==
 
-1. This screenshot shows the Setting section where you can save you API key and re-sync your data.
-2. This is the WordPress admin screen where your can see all your MailChimp campaigns and grab the shortcode to copy-paste it in any post.
-3. This is what you'll see when in case you need to re-sync your data.
-4. Campaigns are rendered in a Responsive iframe on Front.
+1. This screenshot shows the Setting section where you can save you API key and import your data.
+2. This is the WordPress admin screen where your can see all your imported MailChimp campaigns
+3. Campaigns are rendered in a Responsive iframe on front.
 
 
 == Changelog ==
 
-= 2.0.2.2 =
-* Fix issue in dashboard
-* New ajax request for synchronization
+= 3.0.0 =
+* New version to support WordPress 4.5.3
+* Use of the WordPress core Embed functionnality
 * Optimize MC classes
 * Improve performance on admin loading
