@@ -1,4 +1,6 @@
 <?php
+
+if ( ! class_exists( 'MailChimpCampaign' ) ) :
 /**
  * MailChimp Campaigns API
  *
@@ -77,8 +79,10 @@ class MailChimpCampaign extends Mailchimp
   public function init()
   {
     // Populate required fields
-    $title= !empty($this->campaign->settings->title) ? $this->campaign->settings->title : __('Empty title', MCC_TXT_DOMAIN);
-    $excerpt= !empty($this->campaign->settings->subject) ? $this->campaign->settings->subject : __('Empty excerpt', MCC_TXT_DOMAIN);
+    $title= !empty($this->campaign->settings->title) ? $this->campaign->settings->title : null; // Empty title
+    $excerpt= !empty($this->campaign->settings->subject) ? $this->campaign->settings->subject : null; // Empty exceprt
+    if( ! $title && ! $excerpt )
+      $title = $excerpt = __( 'Empty', MCC_TXT_DOMAIN); // Dont allow title and excerpt to be empty 
 
     // Create a new WP_Post
     $this->post->post_type = $this->post_type;
@@ -191,3 +195,4 @@ class MailChimpCampaign extends Mailchimp
   }
 
 }
+endif;
