@@ -64,8 +64,6 @@ class MailchimpCampaigns extends Mailchimp
         $args = array_merge_recursive($default_args, $args);
 
         $results = $this->call('campaigns', $args);
-        var_dump( $results );
-        var_dump( get_class($results) );
         $this->campaigns = json_decode( $results->last_call['body'] );
         
         // Update the time 

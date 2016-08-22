@@ -33,7 +33,7 @@ class MailchimpPost
   */
   public function get_meta($meta_key, $single = false)
   {
-    $this->prepare_post_metas();
+    // $this->prepare_post_metas();
     $real_meta_key =   MCC_META_PRE . $meta_key;  
     $meta = isset($this->post_metas->{$real_meta_key}) ? $this->post_metas->{$real_meta_key} : get_post_meta( $this->post->ID, $real_meta_key, $single );
     $meta = maybe_unserialize( current($meta) );

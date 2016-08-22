@@ -72,4 +72,4 @@ class MailchimpCustomPostType extends Mailchimp
   }
 
 }
-
+$MCC_CustomPostType = new MailchimpCustomPostType();

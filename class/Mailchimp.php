@@ -29,22 +29,21 @@ class Mailchimp {
 	 */
 	public function __construct()
 	{
-		
+
 		$this->settings = (object)get_option('mailchimpcampaigns_settings');
 		// Die here if no API Key...
 		if( !$this->settings->api_key )
 			return new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TEXT_DOMAIN) );
-
-		if( ! $this->test() ) 
-    	 return;
 
 		list(, $datacentre) = explode('-', $this->settings->api_key);
 		$this->settings->api_datacentre = $datacentre;
 		$this->settings->api_version =  MCC_API_VERSION;
 		$this->settings->api_endpoint = 'https://'. $this->settings->api_datacentre.'.api.mailchimp.com/'.$this->settings->api_version;	
 		
-		$this->last_updated	= current_time( 'mysql' );
+		if( ! $this->test() ) 
+    	 return;
 
+		$this->last_updated	= current_time( 'mysql' );
 	}
 
 	/**

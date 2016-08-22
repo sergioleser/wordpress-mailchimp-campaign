@@ -56,51 +56,38 @@ define( 'MCC_META_MAP', array(
 ));
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 
-
-// Get required files
-require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
-require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
-new MailchimpCustomPostType();
-
-/**
- * Include required files
- */
-function mailchimpcampaigns_include_files(){
-    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
-    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
-    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
-    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
-    require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaignMetabox.php');
-}
-
 /**
  * Enqueue plugin style-file
  */
 function mailchimpcampaigns_add_css() {
     wp_register_style( 'mailchimpcampaigns_metaboxes', plugins_url('css/mailchimpcampaigns_metaboxes.css', __FILE__) );
-    if( is_admin() )
-        wp_enqueue_style( 'mailchimpcampaigns_metaboxes' );
+    wp_enqueue_style( 'mailchimpcampaigns_metaboxes' );
 }
 add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_css' );
-// add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
+add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
+
+require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
+require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
+$MCCPostType = new MailchimpCustomPostType();
 
 /**
  * Implements hook_init()
  */
 function mailchimpcampaigns_init(){
-    mailchimpcampaigns_include_files();
+    // Get required files
+    if( is_admin() )
+    {
+        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpAdmin.php');
+        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
+        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
+        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaignMetabox.php');
+        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
+        $MCCAdmin = new MailchimpAdmin();
+        $MCCampaigns = new MailchimpCampaigns();
+        set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
+    } 
 }
 add_action( 'init', 'mailchimpcampaigns_init' );
-
-/**
- * Implements hook admin_init()
- */
-function mailchimpcampaigns_admin_init(){
-    $MCCAdmin = new MailchimpAdmin();
-    $MCCampaigns = new MailchimpCampaigns();
-    set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
-}
-add_action( 'admin_init', 'mailchimpcampaigns_admin_init' );
 
 /**
  * Add Metaboxes to CPT admin screens
@@ -167,3 +154,18 @@ function mailchimpcampaigns_compatibilty() {
     }
 }
 register_activation_hook( __FILE__, 'mailchimpcampaigns_rewrite_flush' );
+
+
+/**
+*
+*/
+function mailchimpcampaigns_embed_filter() {
+    global $post;
+    $metas = get_post_meta($post->ID);
+    $output = ''.
+        $metas['mcc_content_html'][0].
+    '';
+    echo $output; 
+}; 
+add_action( 'embed_content', 'mailchimpcampaigns_embed_filter', 10, 0); 
+// apply_filters( 'embed_template', $template );

@@ -78,7 +78,8 @@ class MailchimpCampaignMetabox
       default:
         break;
       case 'preview':
-        $output = $this->post->get_meta('content_html', true);
+        $output = '@TODO';
+        // $output = $this->post->get_meta('content_html', true);
         break;
       case 'stats':
         if( $this->post->post_metas ) 
