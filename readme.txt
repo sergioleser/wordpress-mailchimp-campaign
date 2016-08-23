@@ -54,6 +54,11 @@ Simply requires a free MailChimp API key.
 
 == Changelog ==
 
+= 3.0.1 =
+* Provide previous shortcodes compatibility
+* Save custom post URL on campaign import to display them on Front
+* FIx missing tag version
+
 = 3.0.0 =
 * New version to support WordPress 4.5.3
 * Use of the WordPress core Embed functionnality
@@ -107,7 +112,7 @@ Simply requires a free MailChimp API key.
 
 
 == Upgrade Notice ==
-= 3.0.0 =
+= 3.0.1 =
 This version is an important update. Campaigns retrieval and display have been entirely rework for performance and ease of use.
 
 = 0.1.2 =
