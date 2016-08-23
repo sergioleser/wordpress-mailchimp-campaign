@@ -152,10 +152,19 @@ class MailChimpCampaign extends Mailchimp
    * Insert post in database
    */
   public function save()
-  {
-    $p = $this->post;
+  { 
     // Save || Update post
     $post_id = $this->post_exists ? wp_update_post( $this->post, true) : wp_insert_post( $this->post, true);
+    
+    // Save the post url in its content to display it on front.
+    if( ! $this->post_exists ) {
+      $new_post = array(
+        'ID' => $post_id,
+        'post_content' => get_permalink($post_id),
+      );
+      wp_update_post( $new_post, true);
+    }
+
     // Save || Update post metas
     foreach( $this->post_metas as $meta_key => $meta_value ){
       $unique = ($meta_key == MCC_META_PRE . 'id') ? true : false;
