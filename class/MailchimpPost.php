@@ -1,5 +1,6 @@
 <?php
 
+if( ! class_exists('MailchimpCustomPostType') ):
 /**
  *
  */
@@ -78,3 +79,4 @@ class MailchimpPost
   }
 
 }
+endif;

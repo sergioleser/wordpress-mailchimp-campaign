@@ -80,9 +80,7 @@ class MailChimpCampaign extends Mailchimp
   {
     // Populate required fields
     $title= !empty($this->campaign->settings->title) ? $this->campaign->settings->title : null; // Empty title
-    $excerpt= !empty($this->campaign->settings->subject) ? $this->campaign->settings->subject : null; // Empty exceprt
-    if( ! $title && ! $excerpt )
-      $title = $excerpt = __( 'Empty', MCC_TXT_DOMAIN); // Dont allow title and excerpt to be empty 
+    $excerpt= !empty($this->campaign->settings->subject) ? $this->campaign->settings->subject : ''; // Empty exceprt
 
     // Create a new WP_Post
     $this->post->post_type = $this->post_type;
@@ -155,6 +153,7 @@ class MailChimpCampaign extends Mailchimp
    */
   public function save()
   {
+    $p = $this->post;
     // Save || Update post
     $post_id = $this->post_exists ? wp_update_post( $this->post, true) : wp_insert_post( $this->post, true);
     // Save || Update post metas

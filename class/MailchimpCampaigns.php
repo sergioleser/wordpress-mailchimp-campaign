@@ -1,5 +1,6 @@
 <?php
 
+if( ! class_exists('MailchimpCampaigns') ):
 class MailchimpCampaigns extends Mailchimp
 {
     // Properties
@@ -83,3 +84,4 @@ class MailchimpCampaigns extends Mailchimp
     <?php }
 
 }
+endif;

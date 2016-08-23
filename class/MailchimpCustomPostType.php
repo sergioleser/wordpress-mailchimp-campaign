@@ -91,7 +91,7 @@ class MailchimpCustomPostType extends Mailchimp
 			// 'date' => __('Date'),
 			// 'create_time' => __( 'Created on' ),
 			'send_time' => __( 'Sent on' ),
-			'archive_url' => __( 'Achive URL' ),
+			// 'archive_url' => __( 'Achive URL' ),
 			'comments' => __('Comments'),
 		);
 	}

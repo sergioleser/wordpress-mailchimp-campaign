@@ -1,4 +1,6 @@
 <?php
+
+if ( ! class_exists( 'Mailchimp' ) ) :
 /**
  * MailChimp Campaigns API
  *
@@ -135,3 +137,4 @@ class Mailchimp {
 
 
 }
+endif;

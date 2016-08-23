@@ -1,5 +1,6 @@
 <?php
 
+if ( ! class_exists( 'MailchimpCampaignMetabox' ) ) :
 /**
  * Register a meta box using a class.
  */
@@ -155,3 +156,4 @@ class MailchimpCampaignMetabox
   }
 
 }
+endif;

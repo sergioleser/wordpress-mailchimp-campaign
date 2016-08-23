@@ -82,9 +82,7 @@ function mailchimpcampaigns_init(){
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaignMetabox.php');
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
-        $MCCAdmin = new MailchimpAdmin();
-        $MCCampaigns = new MailchimpCampaigns();
-        set_transient('mailchimpcampaigns_mcc_campaigns', $MCCampaigns) ;    
+        $MCCAdmin = new MailchimpAdmin();       
     } 
 }
 add_action( 'init', 'mailchimpcampaigns_init' );
@@ -155,7 +153,6 @@ function mailchimpcampaigns_compatibilty() {
 }
 register_activation_hook( __FILE__, 'mailchimpcampaigns_rewrite_flush' );
 
-
 /**
 *
 */
@@ -168,4 +165,3 @@ function mailchimpcampaigns_embed_filter() {
     echo $output; 
 }; 
 add_action( 'embed_content', 'mailchimpcampaigns_embed_filter', 10, 0); 
-// apply_filters( 'embed_template', $template );

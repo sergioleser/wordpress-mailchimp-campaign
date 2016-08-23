@@ -1,4 +1,6 @@
 <?php
+
+if ( ! class_exists('MailchimpAdmin') ):
 /**
  * MailChimp Campaigns API
  *
@@ -249,5 +251,5 @@ class MailchimpAdmin extends Mailchimp
         return '<img src="https://static.mailchimp.com/web/social/freddie.png" style="'.$css.'" />';
     }
 
-
 }
+endif;
