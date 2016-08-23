@@ -7,7 +7,7 @@
     Author: MatthieuScarset 
     Author URI: http://matthieuscarset.com/
     License: GPL
-    Version: 1.0.0
+    Version: 3.0.1
     Text Domain: mailchimpcampaigns
     Domain Path: languages/
 
@@ -67,6 +67,7 @@ add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_css' );
 add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
 
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
+require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
 $MCCPostType = new MailchimpCustomPostType();
 
@@ -81,7 +82,6 @@ function mailchimpcampaigns_init(){
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaign.php');
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaigns.php');
         require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCampaignMetabox.php');
-        require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
         $MCCAdmin = new MailchimpAdmin();       
     } 
 }
@@ -165,3 +165,51 @@ function mailchimpcampaigns_embed_filter() {
     echo $output; 
 }; 
 add_action( 'embed_content', 'mailchimpcampaigns_embed_filter', 10, 0); 
+
+/**
+ * Shortcodes
+ */
+function  mailchimpcampaigns_shutdown_shortcode(){return;}
+function  mailchimpcampaigns_compatibilty_shortcode(){
+    // re-register old shortcodes with a dummy return function
+    // for back-compatibility with v1.0.0
+    $old_shortcodes = array(
+        'campaign-title',
+        'campaign-stats-list',
+        'campaign-stats-table',
+        'campaign-html',
+        'campaign-text',
+        'campaign-id',
+        'cid'
+    );
+    foreach($old_shortcodes as $shortcode){
+        add_shortcode ( $shortcode, 'mailchimpcampaigns_shutdown_shortcode' );
+    }
+}
+function mailchimpcampaigns_campaign_shortcode( $atts ) {
+    $content = '';
+    $settings = get_option('mailchimpcampaigns_settings', false);
+    $cpt = ! empty( $settings['cpt'] ) ? $settings['cpt'] : MCC_DEFAULT_CPT;
+    // Attributes
+    extract( shortcode_atts( array( 'id' => '', ), $atts ) );
+    // Code
+    if ( isset( $id ) ) {
+        // Query the dabatase
+        $args = array(
+            'post_type'  => $cpt,
+            'posts_per_page'   => 1,
+            'meta_query' => array(
+                array(
+                    'key'   => MCC_META_KEY_ID,
+                    'value' => $id,
+                )
+            )
+        );
+        // Get post
+        $posts = get_posts( $args );
+        if( isset($posts[0]) )
+            $content = get_post_embed_html( '600', '800', $posts[0]);
+        return $content;
+    }
+}
+add_shortcode( 'campaign', 'mailchimpcampaigns_campaign_shortcode' );
