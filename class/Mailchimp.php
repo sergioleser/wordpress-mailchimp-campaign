@@ -105,7 +105,7 @@ class Mailchimp {
 			$url = $this->settings->api_endpoint.'/'.$method . $query;
 			$auth = array(
 					'headers' => array(
-							'Authorization' => 'Basic ' . base64_encode( $this->settings->auth_name . ':' . $this->settings->api_key )
+							'Authorization' => 'Basic ' . base64_encode( $this->settings->api_authname . ':' . $this->settings->api_key )
 					)
 			);
 			$this->last_call = wp_remote_request( $url, $auth );
