@@ -9,6 +9,7 @@ class MailchimpCampaignMetabox
  
     // Settings
     public $settings;
+    public $post;
     public $post_type;
     public $post_metas;
 

@@ -89,7 +89,7 @@ class MailChimpCampaign extends Mailchimp
     $this->post->post_excerpt = $excerpt;
     $this->post->post_date = str_replace('T', ' ',  $this->campaign->create_time);
     // $this->post->post_date_gmt = str_replace('T', ' ',  $campaign->create_time);
-    $this->post->post_content = '';
+    // $this->post->post_content = '';
     $this->post->post_status = MCC_DEFAULT_CPT_STATUS;
     $this->post->comment_status = 'open';
     // $this->post->post_modified = '2016-08-15 14:53:24',
@@ -169,7 +169,7 @@ class MailChimpCampaign extends Mailchimp
     foreach( $this->post_metas as $meta_key => $meta_value ){
       $unique = ($meta_key == MCC_META_PRE . 'id') ? true : false;
       $post_metas = $this->post_exists ?
-        update_post_meta($post_id, $meta_key, $meta_value, $prev_value) : add_post_meta($post_id, $meta_key, $meta_value, $unique);
+        update_post_meta($post_id, $meta_key, $meta_value) : add_post_meta($post_id, $meta_key, $meta_value, $unique);
     }
     return $this;
   }

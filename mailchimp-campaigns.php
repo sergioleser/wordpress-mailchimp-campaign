@@ -91,6 +91,7 @@ add_action( 'init', 'mailchimpcampaigns_init' );
  * Add Metaboxes to CPT admin screens
  */
 function mailchimpcampaigns_edit_screen(){
+    global $post;
     $MCCampaignsMetabox = new MailchimpCampaignMetabox($post);
 }
 add_action('load-post.php', 'mailchimpcampaigns_edit_screen', 10, 2);
