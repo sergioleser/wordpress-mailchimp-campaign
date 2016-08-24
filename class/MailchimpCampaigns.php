@@ -48,7 +48,7 @@ class MailchimpCampaigns extends Mailchimp
             unset($campaigns[$i]); // Remove campaigns from array() just for fun
         }
         // Display result
-        $this->admin_notice(__( $this->count() . ' campaigns have been imported.', MCC_TXT_DOMAIN) );
+        $this->admin_notice(__( $this->count() . ' campaigns have been imported.', MCC_TEXT_DOMAIN) );
     }
 
     /**
@@ -78,7 +78,7 @@ class MailchimpCampaigns extends Mailchimp
     ?>
     <div class="<?php print $status; ?>">
         <p>
-            <?php echo __( $message, MCC_TXT_DOMAIN ); ?>
+            <?php echo __( $message, MCC_TEXT_DOMAIN ); ?>
         </p>
     </div>
     <?php }

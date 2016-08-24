@@ -82,7 +82,7 @@ class MailchimpAdmin extends Mailchimp
 
         add_settings_section(
             'mailchimpcampaigns_settings_section', // ID
-            __('Custom settings', MCC_TXT_DOMAIN), // Title
+            __('Custom settings', MCC_TEXT_DOMAIN), // Title
             array( $this, 'print_section_info' ), // Callback
             'mailchimpcampaign-admin' // Page
         );  
@@ -105,7 +105,7 @@ class MailchimpAdmin extends Mailchimp
         );
         add_settings_field(
             'cpt_name',
-            __('Custom Post Type\'s name', MCC_TXT_DOMAIN),
+            __('Custom Post Type\'s name', MCC_TEXT_DOMAIN),
             array( $this, 'field_cpt_name_callback' ), // Callback
             'mailchimpcampaign-admin', // Page
             'mailchimpcampaigns_settings_section', // Section     
@@ -113,7 +113,7 @@ class MailchimpAdmin extends Mailchimp
         );
         add_settings_field(
             'import',
-            __('Import', MCC_TXT_DOMAIN),
+            __('Import', MCC_TEXT_DOMAIN),
             array( $this, 'field_import_callback' ), // Callback
             'mailchimpcampaign-admin', // Page
             'mailchimpcampaigns_settings_section', // Section     
@@ -150,7 +150,7 @@ class MailchimpAdmin extends Mailchimp
      */
     public function print_section_info()
     {
-        print __('Enter your Mailchimp settings below:', MCC_TXT_DOMAIN);
+        print __('Enter your Mailchimp settings below:', MCC_TEXT_DOMAIN);
     }
 
     /**
@@ -161,7 +161,7 @@ class MailchimpAdmin extends Mailchimp
             '<input class="code" type="text" id="api_authname" name="mailchimpcampaigns_settings[api_authname]" value="%s" />',
             isset( $this->settings['api_authname'] ) ? esc_attr( $this->settings['api_authname']) : ''
         );
-        print '<p class="description">'. __('Let Mailchimp knows who you are', MCC_TXT_DOMAIN).' :)</p>';
+        print '<p class="description">'. __('Let Mailchimp knows who you are', MCC_TEXT_DOMAIN).' :)</p>';
     }
     public function field_api_key_callback() {
         printf(
@@ -170,25 +170,25 @@ class MailchimpAdmin extends Mailchimp
         );
         print 
         '<p class="description">' .
-            __('Don\'t know how to get a MailChimp API key?', MCC_TXT_DOMAIN).
+            __('Don\'t know how to get a MailChimp API key?', MCC_TEXT_DOMAIN).
             '<a href="http://developer.mailchimp.com/documentation/mailchimp/guides/how-to-use-oauth2/#register-your-application">'. 
-            ' ' . __('Read the doc', MCC_TXT_DOMAIN) . 
+            ' ' . __('Read the doc', MCC_TEXT_DOMAIN) . 
             '</a>
         </p>';
     }
     public function field_cpt_name_callback() {
-        $placeholder = __('Default: '. MCC_DEFAULT_CPT, MCC_TXT_DOMAIN);      
+        $placeholder = __('Default: '. MCC_DEFAULT_CPT, MCC_TEXT_DOMAIN);      
         printf(
             '<input class="code" type="text" id="cpt_name" name="mailchimpcampaigns_settings[cpt_name]" value="%s" placeholder="'.$placeholder.'" />',
             isset( $this->settings['cpt_name'] ) ? esc_attr( $this->settings['cpt_name']) : ''
         );
         print 
         '<p class="description">'.
-          __('Lowercase only with no special character nor space.', MCC_TXT_DOMAIN).
+          __('Lowercase only with no special character nor space.', MCC_TEXT_DOMAIN).
           '<br/>'.
-          __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TXT_DOMAIN).
+          __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TEXT_DOMAIN).
           '<br/>'.
-          '<strong>'.__('Already imported campaigns are not deleted automatically.', MCC_TXT_DOMAIN). '</strong>'.
+          '<strong>'.__('Already imported campaigns are not deleted automatically.', MCC_TEXT_DOMAIN). '</strong>'.
         '</p>';
     }
     public function field_import_callback() {
@@ -207,7 +207,7 @@ class MailchimpAdmin extends Mailchimp
             $screen->add_help_tab( array(
                 'id' => $screen->id,
                 'title' => __('Synchronization'),
-                'content' => __('Help tab', MCC_TXT_DOMAIN),
+                'content' => __('Help tab', MCC_TEXT_DOMAIN),
             ));
         }
     }
@@ -228,7 +228,7 @@ class MailchimpAdmin extends Mailchimp
      */
     public function import(){
         $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns()) ;
-        return $MCCampaigns->test() ? $MCCampaigns->import() : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TXT_DOMAIN));
+        return $MCCampaigns->test() ? $MCCampaigns->import() : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TEXT_DOMAIN));
     }
 
     /**
@@ -240,7 +240,7 @@ class MailchimpAdmin extends Mailchimp
         if ( $apikey ) : $button = ''. 
             '<p>'.
                 '<a class="button button-secondary" href="/edit.php?post_type='. $cpt.'">'.
-                    __('View', MCC_TXT_DOMAIN) .'&nbsp;'. ucfirst($cpt).'&nbsp;<span class="dashicons dashicons-migrate" style="line-height:1.3"></span>'.
+                    __('View', MCC_TEXT_DOMAIN) .'&nbsp;'. ucfirst($cpt).'&nbsp;<span class="dashicons dashicons-migrate" style="line-height:1.3"></span>'.
                 '</a>'.
             '</p>';
         endif;

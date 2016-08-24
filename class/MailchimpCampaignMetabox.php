@@ -36,7 +36,7 @@ class MailchimpCampaignMetabox
   public function add_metabox( ) {
     add_meta_box(
         'mailchimpcampaigns-preview',
-        __( 'Campaign preview', MCC_TXT_DOMAIN ),
+        __( 'Campaign preview', MCC_TEXT_DOMAIN ),
         array( $this, 'render_metabox' ),
         $this->post_type,
         'normal',
@@ -45,7 +45,7 @@ class MailchimpCampaignMetabox
     );
     add_meta_box(
         'mailchimpcampaigns-stats',
-        __( 'Campaign statistics', MCC_TXT_DOMAIN ),
+        __( 'Campaign statistics', MCC_TEXT_DOMAIN ),
         array( $this, 'render_metabox' ),
         $this->post_type,
         'side',
@@ -54,7 +54,7 @@ class MailchimpCampaignMetabox
     );
     add_meta_box(
         'mailchimpcampaigns-list',
-        __( 'Campaign list', MCC_TXT_DOMAIN ),
+        __( 'Campaign list', MCC_TEXT_DOMAIN ),
         array( $this, 'render_metabox' ),
         $this->post_type,
         'side',

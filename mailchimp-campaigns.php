@@ -107,7 +107,7 @@ function mailchimpcampaigns_settings_link($links, $file) {
     if (!$this_plugin)
         $this_plugin = plugin_basename(__FILE__);
     if ($file == $this_plugin){
-        $settings_link = '<a href="options-general.php?page=mailchimpcampaigns-admin">'.__('Settings', MCC_TXT_DOMAIN).'</a>';
+        $settings_link = '<a href="options-general.php?page=mailchimpcampaigns-admin">'.__('Settings', MCC_TEXT_DOMAIN).'</a>';
         array_unshift($links, $settings_link);
     }
     return $links;
