@@ -26,33 +26,33 @@ define( 'MCC_META_PRE', 'mcc_' );
 define( 'MCC_META_KEY_ID', MCC_META_PRE .'id' );
 define( 'MCC_META_MAP', array( 
     'id' => __('ID', MCC_TEXT_DOMAIN),
-    'type' => _('Type', MCC_TEXT_DOMAIN),
-    'status' => _('Status', MCC_TEXT_DOMAIN),
-    'create_time' => _('Created on', MCC_TEXT_DOMAIN),
-    'send_time' => _('Sent on', MCC_TEXT_DOMAIN),
-    'emails_sent' => _('Emails sent', MCC_TEXT_DOMAIN),
-    'delivery_status' => _('Delivery status', MCC_TEXT_DOMAIN),
+    'type' => __('Type', MCC_TEXT_DOMAIN),
+    'status' => __('Status', MCC_TEXT_DOMAIN),
+    'create_time' => __('Created on', MCC_TEXT_DOMAIN),
+    'send_time' => __('Sent on', MCC_TEXT_DOMAIN),
+    'emails_sent' => __('Emails sent', MCC_TEXT_DOMAIN),
+    'delivery_status' => __('Delivery status', MCC_TEXT_DOMAIN),
     // Content
     // mcc_content_plain_text
     // mcc_content_html
-    'content_type' => _('Content type', MCC_TEXT_DOMAIN),
-    'archive_url' => _('Archive URL', MCC_TEXT_DOMAIN),
-    'long_archive_url' => _('Archive URL (long)', MCC_TEXT_DOMAIN),
+    'content_type' => __('Content type', MCC_TEXT_DOMAIN),
+    'archive_url' => __('Archive URL', MCC_TEXT_DOMAIN),
+    'long_archive_url' => __('Archive URL (long)', MCC_TEXT_DOMAIN),
     // Lists related
-    'recipients' => _('Recipients', MCC_TEXT_DOMAIN),
-    'list_id' => _('List ID', MCC_TEXT_DOMAIN),
-    'list_name' => _('List name', MCC_TEXT_DOMAIN),
-    'segment_text' => _('Segment', MCC_TEXT_DOMAIN),
-    'recipient_count' => _('Recipients', MCC_TEXT_DOMAIN),
+    'recipients' => __('Recipients', MCC_TEXT_DOMAIN),
+    'list_id' => __('List ID', MCC_TEXT_DOMAIN),
+    'list_name' => __('List name', MCC_TEXT_DOMAIN),
+    'segment_text' => __('Segment', MCC_TEXT_DOMAIN),
+    'recipient_count' => __('Recipients', MCC_TEXT_DOMAIN),
     // Extra campaign settings
-    'settings' => _('Settings', MCC_TEXT_DOMAIN),
-    'tracking' => _('Tracking', MCC_TEXT_DOMAIN),
-    'social_card' => _('Social card', MCC_TEXT_DOMAIN),
-    'report_summary' => _('Report summary', MCC_TEXT_DOMAIN),
+    'settings' => __('Settings', MCC_TEXT_DOMAIN),
+    'tracking' => __('Tracking', MCC_TEXT_DOMAIN),
+    'social_card' => __('Social card', MCC_TEXT_DOMAIN),
+    'report_summary' => __('Report summary', MCC_TEXT_DOMAIN),
     // Help related
-    '__links' => _('Action links', MCC_TEXT_DOMAIN),
-    '_edit_lock' => _('Edit lock', MCC_TEXT_DOMAIN),
-    '_edit_last' => _('Edit last', MCC_TEXT_DOMAIN),
+    '__links' => __('Action links', MCC_TEXT_DOMAIN),
+    '_edit_lock' => __('Edit lock', MCC_TEXT_DOMAIN),
+    '_edit_last' => __('Edit last', MCC_TEXT_DOMAIN),
 ));
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 
