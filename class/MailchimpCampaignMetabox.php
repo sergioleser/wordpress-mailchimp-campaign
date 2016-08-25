@@ -100,9 +100,10 @@ class MailchimpCampaignMetabox
         $list_data =  $this->post->get_meta('recipients', true);
         if( $list_data )
         {
+          $labels = get_option('mailchimpcampaigns_labels', mailchimpcampaigns_register_labels());
           foreach( $list_data as $meta_key => $meta_value)
           {
-            echo $this->post->display_meta( MCC_META_MAP[$meta_key], $meta_value );
+            echo $this->post->display_meta( $labels[$meta_key], $meta_value );
           }
         }
         break;
