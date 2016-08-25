@@ -7,7 +7,7 @@
     Author: MatthieuScarset 
     Author URI: http://matthieuscarset.com/
     License: GPL
-    Version: 3.0.1
+    Version: 3.0.3
     Text Domain: mailchimpcampaigns
     Domain Path: languages/
 
