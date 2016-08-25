@@ -56,6 +56,7 @@ Simply requires a free MailChimp API key.
 
 = 3.0.3 =
 * Fix activation issue (thank to @yochanan.g) @see [this ticket](https://wordpress.org/support/topic/wordpress-46-failure?replies=3#post-8794293)
+* Clean uninstall with options deletion
 
 = 3.0.2 =
 * Fix minor bugs
