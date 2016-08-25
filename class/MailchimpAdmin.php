@@ -111,15 +111,16 @@ class MailchimpAdmin extends Mailchimp
             'mailchimpcampaigns_settings_section', // Section     
             array( 'label_for' => 'mailchimpcampaigns_cpt_name' ) // Form label
         );
-        add_settings_field(
-            'import',
-            __('Import', MCC_TEXT_DOMAIN),
-            array( $this, 'field_import_callback' ), // Callback
-            'mailchimpcampaign-admin', // Page
-            'mailchimpcampaigns_settings_section', // Section     
-            array( 'label_for' => 'mailchimpcampaigns_import' ) // Form label
-        );
-    
+        if( isset($this->settings['api_key']) && ! empty($this->settings['api_key']))
+            add_settings_field(
+                'import',
+                __('Import', MCC_TEXT_DOMAIN),
+                array( $this, 'field_import_callback' ), // Callback
+                'mailchimpcampaign-admin', // Page
+                'mailchimpcampaigns_settings_section', // Section     
+                array( 'label_for' => 'mailchimpcampaigns_import' ) // Form label
+            );
+        
     }
 
     /**
@@ -133,16 +134,34 @@ class MailchimpAdmin extends Mailchimp
 
         if( isset( $input['api_authname'] ) )
             $new_input['api_authname'] = sanitize_text_field( $input['api_authname'] );
-        if( isset( $input['api_key'] ) )
+        
+        if( isset( $input['api_key'] ) ) 
+        {
             $new_input['api_key'] = sanitize_text_field( $input['api_key'] );
+            $new_input['api_key'] = $this->check_api_key( $new_input['api_key'] );
+        }
 
         if( isset( $input['cpt_name'] ) )
             $new_input['cpt_name'] = sanitize_title( sanitize_text_field( $input['cpt_name'] ) );
+
         if( isset( $input['import'] ) ) {
             $this->import();
         }
 
         return $new_input;
+    }
+
+    /**
+     * Check API KEY format
+     */
+    public function check_api_key($key)
+    {
+        if( strpos($key, '-') === false ) {
+            return;
+        } 
+        else {
+            return $key;
+        }
     }
 
     /** 

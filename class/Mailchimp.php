@@ -34,13 +34,16 @@ class Mailchimp {
 
 		$this->settings = (object)get_option('mailchimpcampaigns_settings');
 		// Die here if no API Key...
-		if( !$this->settings->api_key )
-			return new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TEXT_DOMAIN) );
-
+		if( ! isset($this->settings->api_key) || empty($this->settings->api_key) )
+			return;
+		// return  new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TXT_DOMAIN) );
+		
+	if( strpos($this->settings->api_key, '-') !== false ) {
 		list(, $datacentre) = explode('-', $this->settings->api_key);
 		$this->settings->api_datacentre = $datacentre;
 		$this->settings->api_version =  MCC_API_VERSION;
 		$this->settings->api_endpoint = 'https://'. $this->settings->api_datacentre.'.api.mailchimp.com/'.$this->settings->api_version;	
+	}
 		
 		if( ! $this->test() ) 
     	 return;
