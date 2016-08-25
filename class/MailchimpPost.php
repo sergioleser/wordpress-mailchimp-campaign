@@ -58,7 +58,8 @@ class MailchimpPost
   */
   public function get_meta_label($meta_key)
   {
-    $label = isset( MCC_META_MAP[$this->get_meta_key($meta_key)] ) ?  MCC_META_MAP[$this->get_meta_key($meta_key)] : ''; 
+    $labels = get_option('mailchimpcampaigns_labels', mailchimpcampaigns_register_labels());
+    $label = isset( $labels[$this->get_meta_key($meta_key)] ) ?  $labels[$this->get_meta_key($meta_key)] : ''; 
     return $label;
   }
 

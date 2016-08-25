@@ -8,4 +8,5 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Delete all the options
-// delete_option('olalaweb_mailchimp_debug');
+delete_option('mailchimpcampaigns_settings');
+delete_option('mailchimpcampaigns_labels');
