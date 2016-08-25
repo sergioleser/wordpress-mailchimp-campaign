@@ -7,7 +7,7 @@
     Author: MatthieuScarset 
     Author URI: http://matthieuscarset.com/
     License: GPL
-    Version: 3.0.1
+    Version: 3.0.3
     Text Domain: mailchimpcampaigns
     Domain Path: languages/
 
@@ -24,38 +24,47 @@ define( 'MCC_DEFAULT_CPT_STATUS',  'publish' );
 define( 'MCC_TEXT_DOMAIN', 'mailchimpcampaigns' );
 define( 'MCC_META_PRE', 'mcc_' );
 define( 'MCC_META_KEY_ID', MCC_META_PRE .'id' );
-define( 'MCC_META_MAP', array( 
-    'id' => __('ID', MCC_TEXT_DOMAIN),
-    'type' => __('Type', MCC_TEXT_DOMAIN),
-    'status' => __('Status', MCC_TEXT_DOMAIN),
-    'create_time' => __('Created on', MCC_TEXT_DOMAIN),
-    'send_time' => __('Sent on', MCC_TEXT_DOMAIN),
-    'emails_sent' => __('Emails sent', MCC_TEXT_DOMAIN),
-    'delivery_status' => __('Delivery status', MCC_TEXT_DOMAIN),
-    // Content
-    // mcc_content_plain_text
-    // mcc_content_html
-    'content_type' => __('Content type', MCC_TEXT_DOMAIN),
-    'archive_url' => __('Archive URL', MCC_TEXT_DOMAIN),
-    'long_archive_url' => __('Archive URL (long)', MCC_TEXT_DOMAIN),
-    // Lists related
-    'recipients' => __('Recipients', MCC_TEXT_DOMAIN),
-    'list_id' => __('List ID', MCC_TEXT_DOMAIN),
-    'list_name' => __('List name', MCC_TEXT_DOMAIN),
-    'segment_text' => __('Segment', MCC_TEXT_DOMAIN),
-    'recipient_count' => __('Recipients', MCC_TEXT_DOMAIN),
-    // Extra campaign settings
-    'settings' => __('Settings', MCC_TEXT_DOMAIN),
-    'tracking' => __('Tracking', MCC_TEXT_DOMAIN),
-    'social_card' => __('Social card', MCC_TEXT_DOMAIN),
-    'report_summary' => __('Report summary', MCC_TEXT_DOMAIN),
-    // Help related
-    '__links' => __('Action links', MCC_TEXT_DOMAIN),
-    '_edit_lock' => __('Edit lock', MCC_TEXT_DOMAIN),
-    '_edit_last' => __('Edit last', MCC_TEXT_DOMAIN),
-));
 define( 'MCC_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 
+function mailchimpcampaigns_register_labels(){
+    $labels = array( 
+        'id' => __('ID', MCC_TEXT_DOMAIN),
+        'type' => __('Type', MCC_TEXT_DOMAIN),
+        'status' => __('Status', MCC_TEXT_DOMAIN),
+        'create_time' => __('Created on', MCC_TEXT_DOMAIN),
+        'send_time' => __('Sent on', MCC_TEXT_DOMAIN),
+        'emails_sent' => __('Emails sent', MCC_TEXT_DOMAIN),
+        'delivery_status' => __('Delivery status', MCC_TEXT_DOMAIN),
+        // Content
+        // mcc_content_plain_text
+        // mcc_content_html
+        'content_type' => __('Content type', MCC_TEXT_DOMAIN),
+        'archive_url' => __('Archive URL', MCC_TEXT_DOMAIN),
+        'long_archive_url' => __('Archive URL (long)', MCC_TEXT_DOMAIN),
+        // Lists related
+        'recipients' => __('Recipients', MCC_TEXT_DOMAIN),
+        'list_id' => __('List ID', MCC_TEXT_DOMAIN),
+        'list_name' => __('List name', MCC_TEXT_DOMAIN),
+        'segment_text' => __('Segment', MCC_TEXT_DOMAIN),
+        'recipient_count' => __('Recipients', MCC_TEXT_DOMAIN),
+        // Extra campaign settings
+        'settings' => __('Settings', MCC_TEXT_DOMAIN),
+        'tracking' => __('Tracking', MCC_TEXT_DOMAIN),
+        'social_card' => __('Social card', MCC_TEXT_DOMAIN),
+        'report_summary' => __('Report summary', MCC_TEXT_DOMAIN),
+        // Help related
+        '__links' => __('Action links', MCC_TEXT_DOMAIN),
+        '_edit_lock' => __('Edit lock', MCC_TEXT_DOMAIN),
+        '_edit_last' => __('Edit last', MCC_TEXT_DOMAIN),
+    );
+    if( get_option('mailchimpcampaigns_labels', false) ) {
+        update_option('mailchimpcampaigns_labels', $labels);
+    } else {
+        add_option('mailchimpcampaigns_labels', $labels);
+    }
+    return $labels; 
+}
+register_activation_hook( __FILE__, 'mailchimpcampaigns_register_labels' );
 /**
  * Enqueue plugin style-file
  */

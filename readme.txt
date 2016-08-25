@@ -2,8 +2,8 @@
 Contributors: matthieuscarset-1, olalaweb
 Tags: mailchimp, mailchimp campaign, mailchimp stats, shortcode, shortcodes, newsletter
 Requires at least: 4.0.0
-Tested up to: 4.5.3
-Stable tag: 3.0.1
+Tested up to: 4.6
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,12 @@ Simply requires a free MailChimp API key.
 
 
 == Changelog ==
+
+= 3.0.3 =
+* Fix activation issue (thank to @yochanan.g) @see [this ticket](https://wordpress.org/support/topic/wordpress-46-failure?replies=3#post-8794293)
+
+= 3.0.2 =
+* Fix minor bugs
 
 = 3.0.1 =
 * Provide previous shortcodes compatibility
