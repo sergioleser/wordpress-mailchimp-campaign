@@ -57,7 +57,7 @@ Simply requires a free MailChimp API key.
 = 3.0.6 =
 * Introduce Campaign Preview in back office
 * Improve performance of class loading
-* Fix issue with incorrect setting object type
+* Fix issue with test on null object (thanks to @yochanan.g) @see (https://wordpress.org/support/topic/importing-newsletters?replies=1)
 
 = 3.0.5 =
 * Fix issue with use of an undefined constant
