@@ -226,7 +226,7 @@ class MailchimpAdmin extends Mailchimp
         ' Check this to import your campaigns from MailChimp';
     }
     public function field_show_preview_callback() {
-        $checked = ($this->settings['show_preview'] === true) ? ' checked' : '';
+        $checked = (isset($this->settings['show_preview']) && $this->settings['show_preview'] === true) ? ' checked' : '';
         echo '<input type="checkbox" id="show-preview" name="mailchimpcampaigns_settings[show_preview]" value="1"'.$checked.' />' .
             ' Activate campaigns preview in admin screens';
     }
