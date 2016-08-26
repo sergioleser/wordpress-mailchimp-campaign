@@ -18,6 +18,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 // Define globals
+define( 'MCC_VERSION', '3.0.6' );
 define( 'MCC_API_VERSION', '3.0' );
 define( 'MCC_DEFAULT_CPT',  'newsletter' );
 define( 'MCC_DEFAULT_CPT_STATUS',  'publish' );

@@ -14,19 +14,12 @@ if ( ! class_exists('MailchimpAdmin') ):
 class MailchimpAdmin extends Mailchimp
 {
 
-    /**  
-     * Holds the values to be used in the fields callbacks
-     */
-    public $settings;
-
-
     /**
      * Start up
      */
     public function __construct()
     {
         parent::__construct();
-        $this->settings =  get_option('mailchimpcampaigns_settings');
         add_action( 'contextual_help', array( $this, 'help_tab' ), 10, 3 );
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
@@ -134,18 +127,22 @@ class MailchimpAdmin extends Mailchimp
 
         if( isset( $input['api_authname'] ) )
             $new_input['api_authname'] = sanitize_text_field( $input['api_authname'] );
+
+        if( isset( $input['cpt_name'] ) )
+            $new_input['cpt_name'] = sanitize_title( sanitize_text_field( $input['cpt_name'] ) );
         
+        // Saving API KEY
         if( isset( $input['api_key'] ) ) 
         {
             $new_input['api_key'] = sanitize_text_field( $input['api_key'] );
             $new_input['api_key'] = $this->check_api_key( $new_input['api_key'] );
         }
 
-        if( isset( $input['cpt_name'] ) )
-            $new_input['cpt_name'] = sanitize_title( sanitize_text_field( $input['cpt_name'] ) );
-
-        if( isset( $input['import'] ) ) {
-            $this->import();
+        // Import campaigns
+        $api_key_has_changed = ($new_input['api_key'] != $this->settings['api_key']) ? true : false;  
+        if( isset( $input['import'] ) && ! $api_key_has_changed ) {
+            if( $this->test() )
+                $this->import();
         }
 
         return $new_input;
@@ -246,7 +243,8 @@ class MailchimpAdmin extends Mailchimp
      * Import Mailchimp Campaigns
      */
     public function import(){
-        $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns()) ;
+        // $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns()) ;
+        $MCCampaigns = new MailchimpCampaigns();
         return $MCCampaigns->test() ? $MCCampaigns->import() : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TEXT_DOMAIN));
     }
 

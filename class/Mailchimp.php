@@ -16,6 +16,7 @@ if ( ! class_exists( 'Mailchimp' ) ) :
 class Mailchimp {
 
 	// Private settings
+	private static $instance;
 	protected $settings;
 
 	// Public settings
@@ -25,6 +26,23 @@ class Mailchimp {
 	public $last_updated;
 	public $data;
 
+public static function instance() {
+		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Mailchimp ) ) {
+			self::$instance = new Mailchimp;
+		}
+		return self::$instance;
+	}
+
+// Cloning instances of the class is forbidden.
+public function __clone() {
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', MCC_TXT_DOMAIN ), MCC_VERSION );
+	}
+
+	// Unserializing instances of the class is forbidden.
+	public function __wakeup() {
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', MCC_TXT_DOMAIN ), MCC_VERSION );
+	}
+
 	/**
 	 * Create Mailchimp  instance
  	 * @see http://developer.mailchimp.com/documentation/mailchimp/guides/get-started-with-mailchimp-api-3/#authentication
@@ -32,19 +50,15 @@ class Mailchimp {
 	public function __construct()
 	{
 
-		$this->settings = (object)get_option('mailchimpcampaigns_settings');
-		// Die here if no API Key...
-		if( ! isset($this->settings->api_key) || empty($this->settings->api_key) )
-			return;
-		// return  new WP_Error('missing api key', __('Mailchimp API Key is missing', MC_TXT_DOMAIN) );
-		
-	if( strpos($this->settings->api_key, '-') !== false ) {
-		list(, $datacentre) = explode('-', $this->settings->api_key);
-		$this->settings->api_datacentre = $datacentre;
-		$this->settings->api_version =  MCC_API_VERSION;
-		$this->settings->api_endpoint = 'https://'. $this->settings->api_datacentre.'.api.mailchimp.com/'.$this->settings->api_version;	
-	}
-		
+		$datacentre = false;
+		$this->settings = get_option('mailchimpcampaigns_settings');
+		if( strpos($this->settings['api_key'], '-') !== false ) {
+			list(, $datacentre) = explode('-', $this->settings['api_key']);
+		}
+		$this->settings['api_datacentre'] = $datacentre;
+		$this->settings['api_version'] =  MCC_API_VERSION;
+		$this->settings['api_endpoint'] = $datacentre ? 'https://'. $this->settings['api_datacentre'].'.api.mailchimp.com/'.$this->settings['api_version'] : null;	
+	
 		if( ! $this->test() ) 
     	 return;
 
@@ -105,13 +119,15 @@ class Mailchimp {
 	public function call($method = null, $args = false, $timeout = 10)
 	{
 			$query = $args ? '?'.http_build_query($args) : '';
-			$url = $this->settings->api_endpoint.'/'.$method . $query;
+			$http = $this->settings['api_endpoint'].'/' ;
+			$url = $http . $method . $query;
 			$auth = array(
 					'headers' => array(
-							'Authorization' => 'Basic ' . base64_encode( $this->settings->api_authname . ':' . $this->settings->api_key )
+							'Authorization' => 'Basic ' . base64_encode( $this->settings['api_authname'] . ':' . $this->settings['api_key'] )
 					)
 			);
 			$this->last_call = wp_remote_request( $url, $auth );
+			$this->is_error = $this->is_error();
 			return $this;
 	}
 
@@ -141,3 +157,11 @@ class Mailchimp {
 
 }
 endif;
+
+
+function MCC() {
+	return Mailchimp::instance();
+}
+
+// Get MCC Running.
+MCC();

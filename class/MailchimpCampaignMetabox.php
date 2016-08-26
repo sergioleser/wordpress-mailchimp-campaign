@@ -17,8 +17,8 @@ class MailchimpCampaignMetabox
     * Constructor.
     */
   public function __construct() {
-    $this->settings = get_option('mailchimpcampaigns_settings', false) ?  (object) get_option('mailchimpcampaigns_settings') : false;
-    $this->post_type = empty($this->settings->cpt_name) ? MCC_DEFAULT_CPT : $this->settings->cpt_name;
+    $this->settings = get_option('mailchimpcampaigns_settings', false) ?  get_option('mailchimpcampaigns_settings') : false;
+    $this->post_type = empty($this->settings['cpt_name']) ? MCC_DEFAULT_CPT : $this->settings['cpt_name'];
     $this->init_metabox();
   }
  

@@ -119,7 +119,8 @@ class MailChimpCampaign extends Mailchimp
     foreach($scopes as $scope){
       // Save specific data for each scope
       $data = $this->call('campaigns/'.$this->campaign->id.'/'.$scope)->get();
-      $this->meta($scope, $data);
+      if( ! $this->is_error )
+        $this->meta($scope, $data);
     }
     return  $this;
   }
