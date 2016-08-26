@@ -36,15 +36,6 @@ class MailchimpCampaignMetabox
   */
   public function add_metabox( ) {
     add_meta_box(
-        'mailchimpcampaigns-preview',
-        __( 'Campaign preview', MCC_TEXT_DOMAIN ),
-        array( $this, 'render_metabox' ),
-        $this->post_type,
-        'normal',
-        'high',
-        'preview'
-    );
-    add_meta_box(
         'mailchimpcampaigns-stats',
         __( 'Campaign statistics', MCC_TEXT_DOMAIN ),
         array( $this, 'render_metabox' ),
@@ -63,6 +54,17 @@ class MailchimpCampaignMetabox
         'list'
     );
 
+    if( isset($this->settings['show_preview']) && $this->settings['show_preview'] === true) 
+      add_meta_box(
+          'mailchimpcampaigns-preview',
+          __( 'Campaign preview', MCC_TEXT_DOMAIN ),
+          array( $this, 'render_metabox' ),
+          $this->post_type,
+          'normal',
+          'high',
+          'preview'
+      );
+
   }
 
   /**
@@ -80,8 +82,9 @@ class MailchimpCampaignMetabox
       default:
         break;
       case 'preview':
-        $output = '@TODO';
-        // $output = $this->post->get_meta('content_html', true);
+        // Experimental
+        // $output = get_post_embed_html( '600', '800', $this->post);
+        $output = $this->post->get_meta('content_html', true);
         break;
       case 'stats':
         if( $this->post->post_metas ) 

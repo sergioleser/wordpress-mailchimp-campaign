@@ -114,6 +114,16 @@ class MailchimpAdmin extends Mailchimp
                 array( 'label_for' => 'mailchimpcampaigns_import' ) // Form label
             );
         
+        // Lab
+        add_settings_field(
+            'show_preview',
+            __('Show preview (experimental)', MCC_TEXT_DOMAIN),
+            array( $this, 'field_show_preview_callback' ), // Callback
+            'mailchimpcampaign-admin', // Page
+            'mailchimpcampaigns_settings_section', // Section     
+            array( 'label_for' => 'mailchimpcampaigns_show_preview' ) // Form label
+        );
+
     }
 
     /**
@@ -145,6 +155,9 @@ class MailchimpAdmin extends Mailchimp
                 $this->import();
         }
 
+        if( isset( $input['show_preview']) && $input['show_preview'] == '1' )
+            $new_input['show_preview'] = true;
+
         return $new_input;
     }
 
@@ -168,7 +181,7 @@ class MailchimpAdmin extends Mailchimp
     {
         print __('Enter your Mailchimp settings below:', MCC_TEXT_DOMAIN);
     }
-
+    
     /**
     * Fields
     */
@@ -212,6 +225,11 @@ class MailchimpAdmin extends Mailchimp
         echo '<input type="checkbox" id="import" name="mailchimpcampaigns_settings[import]" value="import"  />' .
         ' Check this to import your campaigns from MailChimp';
     }
+    public function field_show_preview_callback() {
+        $checked = ($this->settings['show_preview'] === true) ? ' checked' : '';
+        echo '<input type="checkbox" id="show-preview" name="mailchimpcampaigns_settings[show_preview]" value="1"'.$checked.' />' .
+            ' Activate campaigns preview in admin screens';
+    }
   
     /*
     * Help tab for admin screens
@@ -222,8 +240,8 @@ class MailchimpAdmin extends Mailchimp
             $screen = get_current_screen();
             $screen->add_help_tab( array(
                 'id' => $screen->id,
-                'title' => __('Synchronization'),
-                'content' => __('Help tab', MCC_TEXT_DOMAIN),
+                'title' => __('Help'),
+                'content' => __('You can import your mailchimp campaigns from the settings page (Settings > Mailchimp Campaign).', MCC_TEXT_DOMAIN),
             ));
         }
     }
