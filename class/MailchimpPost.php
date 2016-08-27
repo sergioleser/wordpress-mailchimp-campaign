@@ -7,7 +7,7 @@ if( ! class_exists('MailchimpCustomPostType') ):
 class MailchimpPost 
 {
   
-  public $post;
+  public $post; 
   public $post_metas;
 
   /**
@@ -16,7 +16,7 @@ class MailchimpPost
   public function __construct($post)
   {
     $this->post = $post;
-    $this->prepare_post_metas();
+    $this->post_metas = $this->prepare_post_metas();
   }
 
   /**
@@ -24,8 +24,7 @@ class MailchimpPost
   */
   public function prepare_post_metas()
   {
-    if( ! $this->post_metas )
-      $this->post_metas = (object) get_post_meta($this->post->ID);
+    return get_post_meta($this->post->ID);
   }
 
   /**
@@ -34,11 +33,21 @@ class MailchimpPost
   */
   public function get_meta($meta_key, $single = false)
   {
-    // $this->prepare_post_metas();
     $real_meta_key =   MCC_META_PRE . $meta_key;  
-    $meta = isset($this->post_metas->{$real_meta_key}) ? $this->post_metas->{$real_meta_key} : get_post_meta( $this->post->ID, $real_meta_key, $single );
-    $meta = maybe_unserialize( current($meta) );
-    return $meta;
+
+    // Get the metadata
+    if( isset($this->post_metas->{$real_meta_key}) ) {
+      $meta = $this->post_metas->{$real_meta_key};
+    }
+    else {
+     $meta = get_post_meta( $this->post->ID, $real_meta_key, $single );
+    }
+
+    // Filter only the first element
+    if( is_array( $meta ) )
+      $meta = current($meta); 
+      
+    return maybe_unserialize(  $meta );
   }
 
   /**
