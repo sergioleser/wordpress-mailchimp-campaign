@@ -56,11 +56,12 @@ Simply requires a free MailChimp API key.
 
 = 3.0.7 =
 * Fix issue with post meta retrieval in Post edit screen
+* Fix issue on newsletter import (thanks to @joshlin) @see [this ticket](https://wordpress.org/support/topic/no-campaigns?replies=1)
 
 = 3.0.6 =
 * Introduce Campaign Preview in back office
 * Improve performance of class loading
-* Fix issue with test on null object (thanks to @yochanan.g) @see (https://wordpress.org/support/topic/importing-newsletters?replies=1)
+* Fix issue with test on null object (thanks to @yochanan.g) @see [this ticket](https://wordpress.org/support/topic/importing-newsletters?replies=1)
 
 = 3.0.5 =
 * Fix issue with use of an undefined constant
