@@ -11,6 +11,7 @@ class MailchimpCampaigns extends Mailchimp
         parent::__construct();
         if( ! $this->test() ) 
             return;
+
         $this->fetch();
     } 
 
@@ -58,7 +59,7 @@ class MailchimpCampaigns extends Mailchimp
     {
         // Fetch campaigns
         $default_args = array(
-            'count' => 5
+            // 'count' => 5
             // 'status' => 'sent',
             // 'fields' => array('id', 'type'),
         );

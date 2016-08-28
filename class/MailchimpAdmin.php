@@ -149,7 +149,8 @@ class MailchimpAdmin extends Mailchimp
         }
 
         // Import campaigns
-        $api_key_has_changed = ($new_input['api_key'] != $this->settings['api_key']) ? true : false;  
+        $api_key_current = ( isset($this->settings['api_key']) && !empty($this->settings['api_key']) )? $this->settings['api_key'] : null;
+        $api_key_has_changed = ($new_input['api_key'] != $api_key_current) ? true : false;  
         if( isset( $input['import'] ) && ! $api_key_has_changed ) {
             if( $this->test() )
                 $this->import();
@@ -187,14 +188,14 @@ class MailchimpAdmin extends Mailchimp
     */
     public function field_api_authname_callback() {
         printf(
-            '<input class="code" type="text" id="api_authname" name="mailchimpcampaigns_settings[api_authname]" value="%s" />',
+            '<input class="code" type="text" required id="api_authname" name="mailchimpcampaigns_settings[api_authname]" value="%s" />',
             isset( $this->settings['api_authname'] ) ? esc_attr( $this->settings['api_authname']) : ''
         );
         print '<p class="description">'. __('Let Mailchimp knows who you are', MCC_TEXT_DOMAIN).' :)</p>';
     }
     public function field_api_key_callback() {
         printf(
-            '<input class="code" type="text" id="api_key" name="mailchimpcampaigns_settings[api_key]" value="%s" />',
+            '<input class="code" type="text" required id="api_key" name="mailchimpcampaigns_settings[api_key]" value="%s" />',
             isset( $this->settings['api_key'] ) ? esc_attr( $this->settings['api_key']) : ''
         );
         print 
@@ -235,7 +236,7 @@ class MailchimpAdmin extends Mailchimp
     * Help tab for admin screens
     */
     public function help_tab($contextual_help, $screen_id, $screen ){
-        $cpt = $this->settings['cpt_name'] ? $this->settings['cpt_name'] : MCC_DEFAULT_CPT;
+        $cpt = isset($this->settings['cpt_name']) && ! empty(isset($this->settings['cpt_name'])) ? $this->settings['cpt_name'] : MCC_DEFAULT_CPT;
         if ( $cpt == $screen->id || $screen_id == 'settings_page_mailchimpcampaigns-admin') {
             $screen = get_current_screen();
             $screen->add_help_tab( array(

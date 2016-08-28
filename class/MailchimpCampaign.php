@@ -136,8 +136,8 @@ class MailChimpCampaign extends Mailchimp
         $this->post_metas[$meta_key] = $meta_value;      
         break;
       case 'content':
-        $this->post_metas[$meta_key . '_plain_text'] = $meta_value->plain_text; 
-        $this->post_metas[$meta_key . '_html'] = $meta_value->html;
+        $this->post_metas[$meta_key . '_plain_text'] = isset( $meta_value->plain_text ) ? $meta_value->plain_text : null; 
+        $this->post_metas[$meta_key . '_html'] = isset($meta_value->html) ? $meta_value->html : null;
         break;
       case 'feedback':
         // TODO
@@ -159,9 +159,11 @@ class MailChimpCampaign extends Mailchimp
     
     // Save the post url in its content to display it on front.
     if( ! $this->post_exists ) {
+      $cid_meta_key = MCC_META_PRE . 'id';
+      $cid = ( isset( $this->post_metas[$cid_meta_key] ) && !empty($this->post_metas[$cid_meta_key]) ) ? $this->post_metas[$cid_meta_key] : false; 
       $new_post = array(
         'ID' => $post_id,
-        'post_content' => get_permalink($post_id),
+        'post_content' => $cid ? '[campaign id="'.$cid.'"]' : null, // get_permalink($post_id),
       );
       wp_update_post( $new_post, true);
     }

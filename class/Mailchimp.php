@@ -52,7 +52,8 @@ public function __clone() {
 
 		$datacentre = false;
 		$this->settings = get_option('mailchimpcampaigns_settings');
-		if( strpos($this->settings['api_key'], '-') !== false ) {
+		$api_key = ( isset($this->settings['api_key']) &&  !empty($this->settings['api_key']) )? $this->settings['api_key'] : '';
+		if( strpos($api_key, '-') !== false ) {
 			list(, $datacentre) = explode('-', $this->settings['api_key']);
 		}
 		$this->settings['api_datacentre'] = $datacentre;
@@ -71,7 +72,18 @@ public function __clone() {
 	 */
 	public function test($method = null, $args = false, $timeout = 10)
 	{
-		return ! $this->call($method, $args, $timeout)->is_error();
+		$test = false;
+		// Check that all required settings are set
+		if (
+			( isset( $this->settings['api_authname'] ) && ! empty( $this->settings['api_authname']) ) &&
+			( isset( $this->settings['api_key'] ) && ! empty( $this->settings['api_key'] ) ) &&
+			( isset( $this->settings['api_datacentre'] ) && ! empty( $this->settings['api_datacentre']) ) && 
+			( isset( $this->settings['api_version'] ) && ! empty( $this->settings['api_version'] ) ) &&
+			( isset( $this->settings['api_endpoint'] ) && ! empty( $this->settings['api_endpoint'] ) ) 
+		){
+			$test = ! $this->call($method, $args, $timeout)->is_error();
+		}
+		return $test;
 	}
 
 	
@@ -89,9 +101,16 @@ public function __clone() {
 
 		if( isset($response->response) )
 				$response = $response->response;
+		
+		if( isset($response['response']) )
+				$response = $response['response'];
 
 		$code = false;
 		if( is_array($response) ) {
+				$code = !$code && isset($response['code']) ? $response['code'] : false;
+				$message = isset($response['message']) ? $response['message'] : false;
+		}
+		if( is_object($response) ) {
 				$code = !$code && isset($response->code) ? $response->code : false;
 				$message = isset($response->message) ? $response->message : false;
 		}
