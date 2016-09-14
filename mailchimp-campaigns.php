@@ -72,10 +72,22 @@ register_activation_hook( __FILE__, 'mailchimpcampaigns_register_labels' );
 function mailchimpcampaigns_add_css() {
     wp_register_style( 'mailchimpcampaigns_metaboxes', plugins_url('css/mailchimpcampaigns_metaboxes.css', __FILE__) );
     wp_enqueue_style( 'mailchimpcampaigns_metaboxes' );
+    
+    wp_register_style( 'mailchimpcampaigns_admin', plugins_url('css/mailchimpcampaigns_admin.css', __FILE__) );
+    wp_enqueue_style( 'mailchimpcampaigns_admin' );
 }
 add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_css' );
 add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
 
+/**
+ * Enqueue plugin style-file
+ */
+function mailchimpcampaigns_add_js() {
+    wp_enqueue_script( 'ajax-script', plugins_url( '/js/mailchimpcampaigns_admin.js', __FILE__ ), array('jquery') );
+}
+add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_js' );
+
+// Include and instanciate our classes
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
