@@ -11,7 +11,7 @@ Display your MailChimp campaigns, the easy way.
 
 == Description ==
 
-This plugin allows you to **display your Mailchim campaigns in your WordPress site with simple [embed](https://codex.wordpress.org/Embeds) content**.
+This plugin allows you to **display your Mailchimp campaigns in your WordPress site with simple [embed](https://codex.wordpress.org/Embeds) content**.
 
 Import your campaigns in WordPress as custom posts and display them anywhere you want with just a copy/paste of the internal URL.
  
