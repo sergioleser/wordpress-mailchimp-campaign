@@ -7,7 +7,7 @@
     Author: MatthieuScarset 
     Author URI: http://matthieuscarset.com/
     License: GPL
-    Version: 3.0.7
+    Version: 3.1.0
     Text Domain: mailchimpcampaigns
     Domain Path: languages/
 
@@ -72,10 +72,22 @@ register_activation_hook( __FILE__, 'mailchimpcampaigns_register_labels' );
 function mailchimpcampaigns_add_css() {
     wp_register_style( 'mailchimpcampaigns_metaboxes', plugins_url('css/mailchimpcampaigns_metaboxes.css', __FILE__) );
     wp_enqueue_style( 'mailchimpcampaigns_metaboxes' );
+    
+    wp_register_style( 'mailchimpcampaigns_admin', plugins_url('css/mailchimpcampaigns_admin.css', __FILE__) );
+    wp_enqueue_style( 'mailchimpcampaigns_admin' );
 }
 add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_css' );
 add_action( 'wp_enqueue_scripts', 'mailchimpcampaigns_add_css' ); 
 
+/**
+ * Enqueue plugin style-file
+ */
+function mailchimpcampaigns_add_js() {
+    wp_enqueue_script( 'ajax-script', plugins_url( '/js/mailchimpcampaigns_admin.js', __FILE__ ), array('jquery') );
+}
+add_action( 'admin_enqueue_scripts', 'mailchimpcampaigns_add_js' );
+
+// Include and instanciate our classes
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/Mailchimp.php');
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpPost.php');
 require_once( MCC_PLUGIN_ROOT_DIR . 'class/MailchimpCustomPostType.php');
@@ -202,7 +214,7 @@ function mailchimpcampaigns_campaign_shortcode( $atts ) {
     $settings = get_option('mailchimpcampaigns_settings', false);
     $cpt = ! empty( $settings['cpt'] ) ? $settings['cpt'] : MCC_DEFAULT_CPT;
     // Attributes
-    extract( shortcode_atts( array( 'id' => '', ), $atts ) );
+    extract( shortcode_atts( array( 'id' => '', 'height' => 600, 'width' => 800 ), $atts ) );
     // Code
     if ( isset( $id ) ) {
         // Query the dabatase
@@ -219,7 +231,7 @@ function mailchimpcampaigns_campaign_shortcode( $atts ) {
         // Get post
         $posts = get_posts( $args );
         if( isset($posts[0]) )
-            $content = get_post_embed_html( '600', '800', $posts[0]);
+            $content = get_post_embed_html( $width, $height, $posts[0]);
         return $content;
     }
 }

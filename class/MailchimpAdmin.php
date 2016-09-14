@@ -24,6 +24,7 @@ class MailchimpAdmin extends Mailchimp
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
         add_action( 'update_option_mailchimpcampaigns_settings', array( $this, 'action_update_option'), 10, 3 );
+        add_action( 'wp_ajax_mailchimpcampaigns_import', array($this, 'import_ajax') );        
     }
 
     /**
@@ -54,9 +55,15 @@ class MailchimpAdmin extends Mailchimp
                 // This prints out all hidden setting fields
                 settings_fields( 'mailchimpcampaign_option_group' );
                 do_settings_sections( 'mailchimpcampaign-admin' );
-                // submit_button();
-                submit_button( 'Submit', 'primary', 'submit-form', false );
+                
+                // Display submit button
+                submit_button( 'Save settings', 'primary', 'submit-form', false );
+
+                // Display import button
+                if( isset($this->settings['api_key']) && ! empty($this->settings['api_key']))
+                    $this->import_button();                                
             ?>
+            <div id="mailchimpcampaigns_placeholder"></div>
             </form>
         </div>
         <?php
@@ -104,16 +111,7 @@ class MailchimpAdmin extends Mailchimp
             'mailchimpcampaigns_settings_section', // Section     
             array( 'label_for' => 'mailchimpcampaigns_cpt_name' ) // Form label
         );
-        if( isset($this->settings['api_key']) && ! empty($this->settings['api_key']))
-            add_settings_field(
-                'import',
-                __('Import', MCC_TEXT_DOMAIN),
-                array( $this, 'field_import_callback' ), // Callback
-                'mailchimpcampaign-admin', // Page
-                'mailchimpcampaigns_settings_section', // Section     
-                array( 'label_for' => 'mailchimpcampaigns_import' ) // Form label
-            );
-        
+      
         // Lab
         add_settings_field(
             'show_preview',
@@ -217,14 +215,7 @@ class MailchimpAdmin extends Mailchimp
           __('Lowercase only with no special character nor space.', MCC_TEXT_DOMAIN).
           '<br/>'.
           __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TEXT_DOMAIN).
-          '<br/>'.
-          '<strong>'.__('Already imported campaigns are not deleted automatically.', MCC_TEXT_DOMAIN). '</strong>'.
         '</p>';
-    }
-    public function field_import_callback() {
-        // submit_button( 'Syncronize', 'secondary', 'sync-campaigns', false );
-        echo '<input type="checkbox" id="import" name="mailchimpcampaigns_settings[import]" value="import"  />' .
-        ' Check this to import your campaigns from MailChimp';
     }
     public function field_show_preview_callback() {
         $checked = (isset($this->settings['show_preview']) && $this->settings['show_preview'] === true) ? ' checked' : '';
@@ -264,7 +255,25 @@ class MailchimpAdmin extends Mailchimp
     public function import(){
         // $MCCampaigns = get_transient('mailchimpcampaigns_mcc_campaigns', new MailchimpCampaigns()) ;
         $MCCampaigns = new MailchimpCampaigns();
-        return $MCCampaigns->test() ? $MCCampaigns->import() : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TEXT_DOMAIN));
+        return $MCCampaigns->test() ? $MCCampaigns->import(true) : new WP_Error('error on import', __('Error on import. Try again later.', MCC_TEXT_DOMAIN));
+    }
+
+    /**
+    * Ajax button
+    * wp_die() is required to terminate immediately and return a proper response
+    */
+    public function import_ajax()
+    {
+        $data = $this->import(); 
+        echo $return;
+        wp_die(); 
+    }
+
+    /** 
+     * Import button
+     */
+    public function import_button() {
+        submit_button( 'Import', 'secondary', 'mailchimpcampaigns_import', false );     
     }
 
     /**

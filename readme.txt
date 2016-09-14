@@ -3,7 +3,7 @@ Contributors: matthieuscarset-1, olalaweb
 Tags: mailchimp, mailchimp campaign, mailchimp stats, shortcode, shortcodes, newsletter
 Requires at least: 4.0.0
 Tested up to: 4.6
-Stable tag: 3.0.7
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,11 @@ Simply requires a free MailChimp API key.
 
 
 == Changelog ==
+
+= 3.1.0 "Dizzee Rascal" =
+* Add Ajax submit in the admin screen (smoother importation)
+* Override default limitation of the total of campaigns that could be imported (now ALL campaigns are imported).  
+* Add width and height attributes to shortcode so user can specify iframe's dimensions to fit their themes.
 
 = 3.0.7 =
 * Fix issue with post meta retrieval in Post edit screen
@@ -135,7 +140,7 @@ Simply requires a free MailChimp API key.
 
 == Upgrade Notice ==
 
-= 3.0.7 =
+= 3.1.0 =
 This is the latest stable. Please consider using this version. 
 
 = 3.0.1 =
