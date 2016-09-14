@@ -92,6 +92,7 @@ class MailchimpCustomPostType extends Mailchimp
 			// 'create_time' => __( 'Created on' ),
 			'send_time' => __( 'Sent on' ),
 			// 'archive_url' => __( 'Achive URL' ),
+			'shortcode' => __('Shortcode'),
 			'comments' => __('Comments'),
 		);
 	}
@@ -100,8 +101,10 @@ class MailchimpCustomPostType extends Mailchimp
 	 */
 	function add_admin_columns_content($column_name, $post_ID) {
 		$metas = get_post_meta($post_ID);
-		$output = $metas[MCC_META_PRE.$column_name][0];
+		$output = isset( $metas[MCC_META_PRE.$column_name][0] ) ?  $metas[MCC_META_PRE.$column_name][0] : null;
 		
+		if( $column_name == 'shortcode')
+			$output = '[campaign id="'.$metas['mcc_id'][0].'"]';
 		if( $column_name == 'send_time')
 			$output = date_i18n( get_option('date_format', 'l, F jS, Y'), strtotime($output) );
 
