@@ -214,7 +214,7 @@ function mailchimpcampaigns_campaign_shortcode( $atts ) {
     $settings = get_option('mailchimpcampaigns_settings', false);
     $cpt = ! empty( $settings['cpt'] ) ? $settings['cpt'] : MCC_DEFAULT_CPT;
     // Attributes
-    extract( shortcode_atts( array( 'id' => '', ), $atts ) );
+    extract( shortcode_atts( array( 'id' => '', 'height' => 600, 'width' => 800 ), $atts ) );
     // Code
     if ( isset( $id ) ) {
         // Query the dabatase
@@ -231,7 +231,7 @@ function mailchimpcampaigns_campaign_shortcode( $atts ) {
         // Get post
         $posts = get_posts( $args );
         if( isset($posts[0]) )
-            $content = get_post_embed_html( '600', '800', $posts[0]);
+            $content = get_post_embed_html( $width, $height, $posts[0]);
         return $content;
     }
 }
