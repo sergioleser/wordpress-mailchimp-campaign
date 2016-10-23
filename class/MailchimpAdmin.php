@@ -227,7 +227,7 @@ class MailchimpAdmin extends Mailchimp
     * Help tab for admin screens
     */
     public function help_tab($contextual_help, $screen_id, $screen ){
-        $cpt = isset($this->settings['cpt_name']) && ! empty(isset($this->settings['cpt_name'])) ? $this->settings['cpt_name'] : MCC_DEFAULT_CPT;
+        $cpt = isset($this->settings['cpt_name']) && ! empty($this->settings['cpt_name']) ? $this->settings['cpt_name'] : MCC_DEFAULT_CPT;
         if ( $cpt == $screen->id || $screen_id == 'settings_page_mailchimpcampaigns-admin') {
             $screen = get_current_screen();
             $screen->add_help_tab( array(
