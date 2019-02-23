@@ -24,6 +24,10 @@ class MailchimpAdmin extends Mailchimp
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
         add_action( 'update_option_mailchimpcampaigns_settings', array( $this, 'action_update_option'), 10, 3 );
+
+        // Register custom AJax call.
+        // @example add_action( 'wp_ajax_my_action', 'my_action' );
+        // @see https://codex.wordpress.org/AJAX_in_Plugins
         add_action( 'wp_ajax_mailchimpcampaigns_import', array($this, 'import_ajax') );        
     }
 
@@ -111,8 +115,28 @@ class MailchimpAdmin extends Mailchimp
             'mailchimpcampaigns_settings_section', // Section     
             array( 'label_for' => 'mailchimpcampaigns_cpt_name' ) // Form label
         );
-      
+
         // Lab
+        add_settings_field(
+            'import_since',
+            __('Import Campaigns Since (beta)', MCC_TEXT_DOMAIN),
+            array( $this, 'field_import_since_callback' ), // Callback
+            'mailchimpcampaign-admin', // Page
+            'mailchimpcampaigns_settings_section', // Section
+            array( 'label_for' => 'mailchimpcampaigns_import_since' ) // Form label
+        );
+
+        // Lab
+        add_settings_field(
+            'import_before',
+            __('Import Campaigns Untill (beta)', MCC_TEXT_DOMAIN),
+            array( $this, 'field_import_before_callback' ), // Callback
+            'mailchimpcampaign-admin', // Page
+            'mailchimpcampaigns_settings_section', // Section
+            array( 'label_for' => 'mailchimpcampaigns_import_before' ) // Form label
+        );
+        
+       // Lab
         add_settings_field(
             'show_preview',
             __('Show preview (experimental)', MCC_TEXT_DOMAIN),
@@ -148,10 +172,22 @@ class MailchimpAdmin extends Mailchimp
 
         // Import campaigns
         $api_key_current = ( isset($this->settings['api_key']) && !empty($this->settings['api_key']) )? $this->settings['api_key'] : null;
-        $api_key_has_changed = ($new_input['api_key'] != $api_key_current) ? true : false;  
+        $api_key_has_changed = isset($new_input['api_key']) && ($new_input['api_key'] != $api_key_current) ? true : false;  
         if( isset( $input['import'] ) && ! $api_key_has_changed ) {
             if( $this->test() )
                 $this->import();
+        }
+
+        if( isset( $input['import_since'] ) )  {
+            $new_input['import_since'] = sanitize_title( sanitize_text_field( $input['import_since'] ) );
+            //<Pending> Create check_date validation funtion
+            //$new_input['import_since'] = $this->check_date( $new_input['import_since'] );
+        }
+
+        if( isset( $input['import_before'] ) )  {
+            $new_input['import_before'] = sanitize_title( sanitize_text_field( $input['import_before'] ) );
+            //<Pending> Create check_date validation funtion
+            //$new_input['import_before'] = $this->check_date( $new_input['import_before'] );
         }
 
         if( isset( $input['show_preview']) && $input['show_preview'] == '1' )
@@ -217,6 +253,20 @@ class MailchimpAdmin extends Mailchimp
           __('Refresh permalinks after change (<a href="options-permalink.php">Permalinks</a> > Click save).', MCC_TEXT_DOMAIN).
         '</p>';
     }
+    public function field_import_since_callback() {
+        printf(
+            '<input class="code" type="text" id="import_since" name="mailchimpcampaigns_settings[import_since]" value="%s" />',
+            isset( $this->settings['import_since'] ) ? esc_attr( $this->settings['import_since']) : ''
+        );
+        print '<p class="description">'. __('Import campaigns since this date', MCC_TEXT_DOMAIN).' (Use YYYY-MM-DD Format) </p>';
+    }
+    public function field_import_before_callback() {
+        printf(
+            '<input class="code" type="text" id="import_before" name="mailchimpcampaigns_settings[import_before]" value="%s" />',
+            isset( $this->settings['import_before'] ) ? esc_attr( $this->settings['import_before']) : ''
+        );
+        print '<p class="description">'. __('Import campaigns since this date', MCC_TEXT_DOMAIN).' (Use YYYY-MM-DD Format) </p>';
+    }
     public function field_show_preview_callback() {
         $checked = (isset($this->settings['show_preview']) && $this->settings['show_preview'] === true) ? ' checked' : '';
         echo '<input type="checkbox" id="show-preview" name="mailchimpcampaigns_settings[show_preview]" value="1"'.$checked.' />' .
@@ -246,7 +296,7 @@ class MailchimpAdmin extends Mailchimp
             $has_changed = ($old_value['cpt_name'] != $value['cpt_name']);
             if( $has_changed )
                 flush_rewrite_rules(); // If CPT Name has changed
-        } 
+        }
     }
 
     /**
@@ -265,7 +315,7 @@ class MailchimpAdmin extends Mailchimp
     public function import_ajax()
     {
         $data = $this->import(); 
-        echo $return;
+        // echo $return;
         wp_die(); 
     }
 
@@ -273,23 +323,8 @@ class MailchimpAdmin extends Mailchimp
      * Import button
      */
     public function import_button() {
-        submit_button( 'Import', 'secondary', 'mailchimpcampaigns_import', false );     
-    }
-
-    /**
-    * Miscellaneous
-    */
-    public function mailchimpcampaigns_button(){   
-        $apikey = get_option('mailchimpcampaigns_api_key', false );
-        $cpt =  get_option('mailchimpcampaigns_post_type_name', MCC_DEFAULT_CPT); 
-        if ( $apikey ) : $button = ''. 
-            '<p>'.
-                '<a class="button button-secondary" href="/edit.php?post_type='. $cpt.'">'.
-                    __('View', MCC_TEXT_DOMAIN) .'&nbsp;'. ucfirst($cpt).'&nbsp;<span class="dashicons dashicons-migrate" style="line-height:1.3"></span>'.
-                '</a>'.
-            '</p>';
-        endif;
-        return $button;
+      // Call our custom action on submit.
+      submit_button( 'Import', 'primary', 'mailchimpcampaigns_import', false );     
     }
 
     public function logo($css){
